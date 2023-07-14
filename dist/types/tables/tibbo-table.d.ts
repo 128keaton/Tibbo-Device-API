@@ -1,5 +1,5 @@
-import { TibboRow } from "./tibbo-row";
-import { TibboColumn } from "./tibbo-column";
+import { TibboRow } from './tibbo-row';
+import { TibboColumn } from './tibbo-column';
 export declare class TibboTable {
     readonly name: string;
     readonly columns: TibboColumn[];

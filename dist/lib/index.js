@@ -14,7 +14,5 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./types/tables/tibbo-table"), exports);
-__exportStar(require("./types/tables/tibbo-row"), exports);
-__exportStar(require("./types/tables/tibbo-column"), exports);
-__exportStar(require("./lib/index"), exports);
+__exportStar(require("./tibbo-requests"), exports);
+__exportStar(require("./tibbo-tables"), exports);
