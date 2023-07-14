@@ -1,8 +1,8 @@
 {
   "name": "@vipstorage/tibbo-device-api",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
-  "main": "dist/cli.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "commonjs",
   "bin": {

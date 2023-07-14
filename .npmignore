@@ -1,0 +1,8 @@
+src/
+jest.config.mjs
+docs/
+coverage
+.eslintrc.js
+.prettierrc
+tsconfig.json
+.idea/
