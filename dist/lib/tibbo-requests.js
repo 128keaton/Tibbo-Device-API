@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TibboRequests = void 0;
 const kb_burly_1 = require("kb-burly");
 const node_fetch_1 = __importDefault(require("node-fetch"));
+/** @internal */
 class TibboRequests {
     static getPlainRequest(deviceAddress, request) {
         let requestURL = (0, kb_burly_1.Burly)(`http://${deviceAddress}/api.html`);

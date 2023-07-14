@@ -1,6 +1,7 @@
 import { Burly } from 'kb-burly';
 import fetch from 'node-fetch';
 
+/** @internal */
 export class TibboRequests {
   public static getPlainRequest(
     deviceAddress: string,

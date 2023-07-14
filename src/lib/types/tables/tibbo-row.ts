@@ -3,9 +3,9 @@ export class TibboRow {
   private columnValues: { [key: string]: unknown } = {};
 
   /**
-   * Formatted like "ROW_ID,Column1,Column2,Column3 and so on
-   * @param rawString
-   * @param columnIDs
+   * Create a new TibboRow object
+   * @param rawString A string like 'ROW_ID,Column1,Column2,Column3'
+   * @param columnIDs A string array of column identifiers
    */
   constructor(rawString: string, columnIDs: string[]) {
     const splitRow = rawString.split(',');
@@ -21,7 +21,8 @@ export class TibboRow {
 
   /**
    * Returns the value for the column ID
-   * @param columnID
+   * @param columnID Identifier of the column
+   * @returns whatever value is associated with the column
    */
   public getValue(columnID: string) {
     return this.columnValues[columnID];
@@ -29,7 +30,8 @@ export class TibboRow {
 
   /**
    * Returns for the value for the column at the specified index
-   * @param index
+   * @param index Index of the column
+   * @returns whatever value is associated with the column
    */
   public getValueAtIndex(index: number) {
     return Object.values(this.columnValues)[index];

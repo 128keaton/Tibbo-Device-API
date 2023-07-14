@@ -1,6 +1,21 @@
 # Tibbo Device API
+![coverage](coverage/badge-branches.svg) 
+A library/CLI tool to manage Tibbo devices
 
-Example output:
+
+## Supported Features
+
+* Tables
+  * List tables
+  * List table's rows
+  * Add a row
+  * Delete a row
+
+## Usage
+### CLI
+
+
+Example output of `npx tibbo-device-api tables fetch 0.0.0.0`:
 ```json
 [
   {

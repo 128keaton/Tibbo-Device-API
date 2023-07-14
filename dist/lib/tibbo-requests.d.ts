@@ -1,3 +1,4 @@
+/** @internal */
 export declare class TibboRequests {
     static getPlainRequest(deviceAddress: string, request: {
         [key: string]: string;

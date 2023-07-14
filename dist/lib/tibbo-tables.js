@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TibboTables = void 0;
-const tibbo_table_1 = require("../types/tables/tibbo-table");
+const types_1 = require("./types");
 const tibbo_requests_1 = require("./tibbo-requests");
 class TibboTables {
     /**
      * Get the tables on the Tibbo device given the IP address
-     * @param deviceAddress
+     * @param deviceAddress The IP address of the Tibbo device
+     * @returns array of TibboTable
      */
     async get(deviceAddress) {
         const tables = await this._getTables(deviceAddress);
@@ -14,8 +15,9 @@ class TibboTables {
     }
     /**
      * Get the rows of the given table
-     * @param deviceAddress
-     * @param tableName
+     * @param deviceAddress The IP address of the Tibbo device
+     * @param tableName The table name
+     * @returns array of TibboRow
      */
     async getRows(deviceAddress, tableName) {
         const tables = await this._getTables(deviceAddress);
@@ -28,9 +30,10 @@ class TibboTables {
     }
     /**
      * Delete a row by its ID on the given table
-     * @param rowID
-     * @param deviceAddress
-     * @param tableName
+     * @param rowID The row's ID
+     * @param deviceAddress The IP address of the Tibbo device
+     * @param tableName The table name
+     * @returns true if deleted
      */
     deleteRow(rowID, deviceAddress, tableName) {
         return tibbo_requests_1.TibboRequests.postPlainRequest(deviceAddress, {
@@ -43,9 +46,10 @@ class TibboTables {
     }
     /**
      * Add a row to the given table
-     * @param rowData
-     * @param deviceAddress
-     * @param tableName
+     * @param rowData Row data in comma separated form i.e 'COL1,COL2'
+     * @param deviceAddress The IP address of the Tibbo device
+     * @param tableName The table name
+     * @returns true if added
      */
     addRow(rowData, deviceAddress, tableName) {
         return tibbo_requests_1.TibboRequests.postPlainRequest(deviceAddress, {
@@ -56,6 +60,7 @@ class TibboTables {
             table: tableName,
         }).then((response) => response === '');
     }
+    /** @internal **/
     async _getTables(deviceAddress) {
         const tablesMetaResponse = await tibbo_requests_1.TibboRequests.getPlainRequest(deviceAddress, {
             e: 't',
@@ -63,8 +68,9 @@ class TibboTables {
             type: 'table',
             p: '',
         });
-        return tablesMetaResponse.split(',\r\n').map((raw) => new tibbo_table_1.TibboTable(raw));
+        return tablesMetaResponse.split(',\r\n').map((raw) => new types_1.TibboTable(raw));
     }
+    /** @internal **/
     async _getTableRows(deviceAddress, table) {
         return tibbo_requests_1.TibboRequests.getPlainRequest(deviceAddress, {
             e: 't',

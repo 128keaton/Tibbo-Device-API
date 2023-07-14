@@ -1,10 +1,11 @@
-import { TibboTable } from '../types/tables/tibbo-table';
+import { TibboTable } from './types';
 import { TibboRequests } from './tibbo-requests';
 
 export class TibboTables {
   /**
    * Get the tables on the Tibbo device given the IP address
-   * @param deviceAddress
+   * @param deviceAddress The IP address of the Tibbo device
+   * @returns array of TibboTable
    */
   public async get(deviceAddress: string) {
     const tables = await this._getTables(deviceAddress);
@@ -16,8 +17,9 @@ export class TibboTables {
 
   /**
    * Get the rows of the given table
-   * @param deviceAddress
-   * @param tableName
+   * @param deviceAddress The IP address of the Tibbo device
+   * @param tableName The table name
+   * @returns array of TibboRow
    */
   public async getRows(deviceAddress: string, tableName: string) {
     const tables = await this._getTables(deviceAddress);
@@ -35,9 +37,10 @@ export class TibboTables {
 
   /**
    * Delete a row by its ID on the given table
-   * @param rowID
-   * @param deviceAddress
-   * @param tableName
+   * @param rowID The row's ID
+   * @param deviceAddress The IP address of the Tibbo device
+   * @param tableName The table name
+   * @returns true if deleted
    */
   public deleteRow(rowID: number, deviceAddress: string, tableName: string) {
     return TibboRequests.postPlainRequest(deviceAddress, {
@@ -51,9 +54,10 @@ export class TibboTables {
 
   /**
    * Add a row to the given table
-   * @param rowData
-   * @param deviceAddress
-   * @param tableName
+   * @param rowData Row data in comma separated form i.e 'COL1,COL2'
+   * @param deviceAddress The IP address of the Tibbo device
+   * @param tableName The table name
+   * @returns true if added
    */
   public addRow(rowData: string, deviceAddress: string, tableName: string) {
     return TibboRequests.postPlainRequest(deviceAddress, {
@@ -65,6 +69,7 @@ export class TibboTables {
     }).then((response) => response === '');
   }
 
+  /** @internal **/
   private async _getTables(deviceAddress: string) {
     const tablesMetaResponse = await TibboRequests.getPlainRequest(
       deviceAddress,
@@ -79,6 +84,7 @@ export class TibboTables {
     return tablesMetaResponse.split(',\r\n').map((raw) => new TibboTable(raw));
   }
 
+  /** @internal **/
   private async _getTableRows(deviceAddress: string, table: TibboTable) {
     return TibboRequests.getPlainRequest(deviceAddress, {
       e: 't',

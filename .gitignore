@@ -1,2 +1,8 @@
 node_modules/
 .idea/
+coverage/*.js
+coverage/*.css
+coverage/*.json
+coverage/*.png
+coverage/**/*.html
+

@@ -1,2 +1,2 @@
-export * from './tibbo-requests';
+export * from './types';
 export * from './tibbo-tables';
