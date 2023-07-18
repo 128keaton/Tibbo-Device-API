@@ -4,6 +4,8 @@
 ![coverage](https://github.com/128keaton/Tibbo-Device-API/raw/main/coverage/badge-statements.svg)
 ![coverage](https://github.com/128keaton/Tibbo-Device-API/raw/main/coverage/badge-branches.svg)
 
+![tables](https://github.com/128keaton/Tibbo-Device-API/raw/main/examples/main.png)
+
 A library/CLI tool to manage Tibbo devices
 
 ```shell
