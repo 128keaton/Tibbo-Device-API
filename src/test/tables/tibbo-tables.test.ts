@@ -1,8 +1,8 @@
-import { TibboRow, TibboTable, TibboTables } from '../lib';
+import { TibboRow, TibboTable, TibboTables } from '../../lib';
 
 jest.mock('node-fetch');
 import fetch from 'node-fetch';
-import { mockedTableResponse, rawTableOne } from './test-consts';
+import { mockedTableResponse, rawTableOne } from '../test-consts';
 
 const { Response } = jest.requireActual('node-fetch');
 

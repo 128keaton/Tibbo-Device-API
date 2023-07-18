@@ -1,6 +1,7 @@
 #! /usr/bin/env node
 import { program } from 'commander';
 import { TibboTables } from './lib';
+import { TibboSettings } from './lib/tibbo-settings';
 
 if (require.main == module) {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -17,6 +18,60 @@ if (require.main == module) {
     .name('tibbo-device-api')
     .version(packageInfo.version)
     .argument('<ipAddress>', 'IP address of Tibbo device');
+
+  const settings = program
+    .command('settings')
+    .summary('Update and view settings on the device');
+
+  settings
+    .command('all')
+    .summary('Get all the current settings on the device')
+    .argument('<ipAddress>', 'IP address of Tibbo device')
+    .action((ipAddress) => {
+      validateDeviceAddress(ipAddress);
+      return new TibboSettings()
+        .getAll(ipAddress)
+        .then((result) => console.log(JSON.stringify(result, null, 2)));
+    });
+
+  settings
+    .command('get')
+    .summary('Get the value for the setting on the device')
+    .argument('<ipAddress>', 'IP address of Tibbo device')
+    .argument('<settingID>', 'ID/name of the setting on the Tibbo device')
+    .action((ipAddress, settingID) => {
+      validateDeviceAddress(ipAddress);
+      return new TibboSettings()
+        .get(ipAddress, settingID)
+        .then((result) => console.log(JSON.stringify(result, null, 2)));
+    });
+
+  settings
+    .command('set')
+    .summary('Get the value for the setting on the device')
+    .argument('<ipAddress>', 'IP address of Tibbo device')
+    .argument('<settingID>', 'ID/name of the setting on the Tibbo device')
+    .argument(
+      '<settingValue>',
+      'New value to set for the setting on the Tibbo device',
+    )
+    .action((ipAddress, settingID, settingValue) => {
+      validateDeviceAddress(ipAddress);
+      return new TibboSettings()
+        .set(ipAddress, settingID, settingValue)
+        .then((result) => console.log(JSON.stringify(result, null, 2)));
+    });
+
+  settings
+    .command('initialize')
+    .summary('Reset the device settings back to their defaults')
+    .argument('<ipAddress>', 'IP address of Tibbo device')
+    .action((ipAddress) => {
+      validateDeviceAddress(ipAddress);
+      return new TibboSettings()
+        .initialize(ipAddress)
+        .then((result) => console.log(JSON.stringify(result, null, 2)));
+    });
 
   const tables = program
     .command('tables')

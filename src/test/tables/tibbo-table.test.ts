@@ -1,5 +1,5 @@
-import {TibboRow, TibboTable} from "../index";
-import {rawTableOne} from "./test-consts";
+import {TibboRow, TibboTable} from "../../index";
+import {rawTableOne} from "../test-consts";
 
 describe('test TibboTable', () => {
     test('invalid table', () => {

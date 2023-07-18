@@ -1,5 +1,9 @@
 # Tibbo Device API
-![coverage](coverage/badge-branches.svg) 
+![coverage](coverage/badge-functions.svg)
+![coverage](coverage/badge-lines.svg)
+![coverage](coverage/badge-statements.svg)
+![coverage](coverage/badge-branches.svg)
+
 A library/CLI tool to manage Tibbo devices
 
 
@@ -10,6 +14,11 @@ A library/CLI tool to manage Tibbo devices
   * List table's rows
   * Add a row
   * Delete a row
+* Settings
+  * Query device settings
+  * Set a setting
+  * View a setting
+  * Initialize settings
 
 ## Usage
 ### CLI

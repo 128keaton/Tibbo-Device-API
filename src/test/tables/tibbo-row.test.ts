@@ -1,4 +1,4 @@
-import {TibboRow} from "../index";
+import {TibboRow} from "../../lib";
 
 describe('test TibboRow', () => {
     test('invalid row', () => {
