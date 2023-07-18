@@ -46,6 +46,11 @@ $ npx tibbo-device-api
 * Initial commit
 
 ## Usage
+### Examples
+![tables](https://github.com/128keaton/Tibbo-Device-API/raw/main/examples/example-tables.png)
+![settings-all](https://github.com/128keaton/Tibbo-Device-API/raw/main/examples/settings-all.png)
+![settings-set](https://github.com/128keaton/Tibbo-Device-API/raw/main/examples/settings-set.png)
+
 ### CLI
 
 
