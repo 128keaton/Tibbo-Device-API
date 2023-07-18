@@ -16,6 +16,16 @@ if (require.main == module) {
         .version(packageInfo.version)
         .argument('<ipAddress>', 'IP address of Tibbo device');
     commander_1.program
+        .command('reboot')
+        .summary('Reboot Tibbo device')
+        .argument('<ipAddress>', 'IP address of Tibbo device')
+        .action((ipAddress) => {
+        validateDeviceAddress(ipAddress);
+        return new lib_1.TibboFunctions()
+            .reboot(ipAddress)
+            .then((result) => console.log(result ? 'Success' : 'Error'));
+    });
+    commander_1.program
         .command('query')
         .summary('Query device info')
         .argument('<ipAddress>', 'IP address of Tibbo device')

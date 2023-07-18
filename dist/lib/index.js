@@ -18,3 +18,4 @@ __exportStar(require("./types"), exports);
 __exportStar(require("./tibbo-tables"), exports);
 __exportStar(require("./tibbo-settings"), exports);
 __exportStar(require("./tibbo-query"), exports);
+__exportStar(require("./tibbo-functions"), exports);

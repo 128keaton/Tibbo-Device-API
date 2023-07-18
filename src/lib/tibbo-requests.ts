@@ -23,6 +23,7 @@ export class TibboRequests {
       e: string;
       p: string | null;
     },
+    timeout?: number,
   ) {
     const requestURL = Burly(`http://${deviceAddress}/api.html`);
 
@@ -37,6 +38,7 @@ export class TibboRequests {
     return fetch(requestURL.get, {
       method: 'POST',
       body: query.toString(),
+      timeout,
     }).then((response) => response.text());
   }
 }

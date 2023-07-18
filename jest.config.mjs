@@ -12,6 +12,7 @@ export default {
     "json-summary",
     "html"
   ],
+  testEnvironment: "node",
   rootDir: "src",
   "collectCoverageFrom": [
     "**/*.(t|j)s",

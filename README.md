@@ -26,8 +26,12 @@ $ npx tibbo-device-api
   * Initialize settings
 * Info
   * Query basic device info (like firmware version)
+* Functions
+  * Reboot device
 
 ## Changelog
+### 0.0.7
+* Adds reboot function
 
 ### 0.0.6
 * Fixes setting map bug

@@ -15,7 +15,7 @@ class TibboRequests {
         });
         return (0, node_fetch_1.default)(requestURL.get).then((response) => response.text());
     }
-    static postPlainRequest(deviceAddress, request) {
+    static postPlainRequest(deviceAddress, request, timeout) {
         const requestURL = (0, kb_burly_1.Burly)(`http://${deviceAddress}/api.html`);
         const query = new URLSearchParams();
         Object.keys(request).forEach((key) => {
@@ -26,6 +26,7 @@ class TibboRequests {
         return (0, node_fetch_1.default)(requestURL.get, {
             method: 'POST',
             body: query.toString(),
+            timeout,
         }).then((response) => response.text());
     }
 }
