@@ -1,8 +1,8 @@
 # Tibbo Device API
-![coverage](coverage/badge-functions.svg)
-![coverage](coverage/badge-lines.svg)
-![coverage](coverage/badge-statements.svg)
-![coverage](coverage/badge-branches.svg)
+![coverage](https://github.com/128keaton/Tibbo-Device-API/raw/main/coverage/badge-functions.svg)
+![coverage](https://github.com/128keaton/Tibbo-Device-API/raw/main/coverage/badge-lines.svg)
+![coverage](https://github.com/128keaton/Tibbo-Device-API/raw/main/coverage/badge-statements.svg)
+![coverage](https://github.com/128keaton/Tibbo-Device-API/raw/main/coverage/badge-branches.svg)
 
 A library/CLI tool to manage Tibbo devices
 
