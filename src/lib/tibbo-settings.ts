@@ -145,26 +145,22 @@ export class TibboSettings {
   private parseValueMapping(mappingLine: string) {
     const valueObject: TibboValueMapping = {};
 
-    const cleanLine = mappingLine.replace('O=', '').match(/.{1,3}/g);
+    let value: string | undefined = undefined;
+    mappingLine
+      .replace('O=', '')
+      .split('/')
+      .forEach((keyOrValue) => {
+        if (!!value) {
+          const key = keyOrValue;
+          if (!isNaN(Number(key))) {
+            valueObject[Number(key)] = value;
+          } else valueObject[key] = value;
 
-    if (cleanLine === null) return undefined;
-
-    const splitValueMapping = (array: string[], n: number) => {
-      const [...arr] = array;
-      const res = [];
-      while (arr.length) {
-        res.push(arr.splice(0, n).map((s) => s.replaceAll('/', '')));
-      }
-      return res;
-    };
-
-    splitValueMapping(cleanLine, 2).forEach((mapping) => {
-      const key = mapping[1];
-
-      if (!isNaN(Number(key))) {
-        valueObject[Number(key)] = mapping[0];
-      } else valueObject[key] = mapping[0];
-    });
+          value = undefined;
+        } else {
+          value = keyOrValue;
+        }
+      });
 
     return valueObject;
   }
@@ -190,7 +186,10 @@ export class TibboSettings {
 
     const splitSetting = settingDef.split(';');
 
-    if (splitSetting.length === 6)
+    if (
+      splitSetting.length === 6 ||
+      (splitSetting.length === 5 && splitSetting[4][0] === 'O')
+    )
       settingObject.valueMapping = this.parseValueMapping(
         splitSetting.pop() as string,
       );

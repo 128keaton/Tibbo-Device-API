@@ -25,6 +25,26 @@ $ npx tibbo-device-api
 * Info
   * Query basic device info (like firmware version)
 
+## Changelog
+
+### 0.0.6
+* Fixes setting map bug
+
+### 0.0.5
+* Adds query
+
+### 0.0.4
+* Adds settings
+
+### 0.0.3
+* Adds tests
+
+### 0.0.2
+* Adds tables
+
+### 0.0.1
+* Initial commit
+
 ## Usage
 ### CLI
 

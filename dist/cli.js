@@ -59,7 +59,7 @@ if (require.main == module) {
         validateDeviceAddress(ipAddress);
         return new lib_1.TibboSettings()
             .set(ipAddress, settingID, settingValue)
-            .then((result) => console.log(JSON.stringify(result, null, 2)));
+            .then((result) => console.log(result ? 'Success' : 'Error'));
     });
     settings
         .command('initialize')
@@ -69,7 +69,7 @@ if (require.main == module) {
         validateDeviceAddress(ipAddress);
         return new lib_1.TibboSettings()
             .initialize(ipAddress)
-            .then((result) => console.log(JSON.stringify(result, null, 2)));
+            .then((result) => console.log(result ? 'Success' : 'Error'));
     });
     const tables = commander_1.program
         .command('tables')
@@ -111,7 +111,7 @@ if (require.main == module) {
         validateDeviceAddress(ipAddress);
         return new lib_1.TibboTables()
             .deleteRow(rowID, ipAddress, tableName)
-            .then((result) => console.log(JSON.stringify(result, null, 2)));
+            .then((result) => console.log(result ? 'Success' : 'Error'));
     });
     rows
         .command('add')
@@ -123,7 +123,7 @@ if (require.main == module) {
         validateDeviceAddress(ipAddress);
         return new lib_1.TibboTables()
             .addRow(rowData, ipAddress, tableName)
-            .then((result) => console.log(JSON.stringify(result, null, 2)));
+            .then((result) => console.log(result ? 'Success' : 'Error'));
     });
     commander_1.program.parse();
 }

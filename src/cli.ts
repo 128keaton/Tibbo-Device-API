@@ -69,7 +69,7 @@ if (require.main == module) {
       validateDeviceAddress(ipAddress);
       return new TibboSettings()
         .set(ipAddress, settingID, settingValue)
-        .then((result) => console.log(JSON.stringify(result, null, 2)));
+        .then((result) => console.log(result ? 'Success' : 'Error'));
     });
 
   settings
@@ -80,7 +80,7 @@ if (require.main == module) {
       validateDeviceAddress(ipAddress);
       return new TibboSettings()
         .initialize(ipAddress)
-        .then((result) => console.log(JSON.stringify(result, null, 2)));
+        .then((result) => console.log(result ? 'Success' : 'Error'));
     });
 
   const tables = program
@@ -129,7 +129,7 @@ if (require.main == module) {
 
       return new TibboTables()
         .deleteRow(rowID, ipAddress, tableName)
-        .then((result) => console.log(JSON.stringify(result, null, 2)));
+        .then((result) => console.log(result ? 'Success' : 'Error'));
     });
 
   rows
@@ -143,7 +143,7 @@ if (require.main == module) {
 
       return new TibboTables()
         .addRow(rowData, ipAddress, tableName)
-        .then((result) => console.log(JSON.stringify(result, null, 2)));
+        .then((result) => console.log(result ? 'Success' : 'Error'));
     });
 
   program.parse();
