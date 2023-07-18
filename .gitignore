@@ -5,4 +5,4 @@ coverage/*.css
 coverage/*.json
 coverage/*.png
 coverage/**/*.html
-
+.DS_Store
