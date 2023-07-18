@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const commander_1 = require("commander");
 const lib_1 = require("./lib");
-const tibbo_settings_1 = require("./lib/tibbo-settings");
 if (require.main == module) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const packageInfo = require('../package.json');
@@ -16,6 +15,16 @@ if (require.main == module) {
         .name('tibbo-device-api')
         .version(packageInfo.version)
         .argument('<ipAddress>', 'IP address of Tibbo device');
+    commander_1.program
+        .command('query')
+        .summary('Query device info')
+        .argument('<ipAddress>', 'IP address of Tibbo device')
+        .action((ipAddress) => {
+        validateDeviceAddress(ipAddress);
+        return new lib_1.TibboQuery()
+            .query(ipAddress)
+            .then((result) => console.log(JSON.stringify(result, null, 2)));
+    });
     const settings = commander_1.program
         .command('settings')
         .summary('Update and view settings on the device');
@@ -25,7 +34,7 @@ if (require.main == module) {
         .argument('<ipAddress>', 'IP address of Tibbo device')
         .action((ipAddress) => {
         validateDeviceAddress(ipAddress);
-        return new tibbo_settings_1.TibboSettings()
+        return new lib_1.TibboSettings()
             .getAll(ipAddress)
             .then((result) => console.log(JSON.stringify(result, null, 2)));
     });
@@ -36,7 +45,7 @@ if (require.main == module) {
         .argument('<settingID>', 'ID/name of the setting on the Tibbo device')
         .action((ipAddress, settingID) => {
         validateDeviceAddress(ipAddress);
-        return new tibbo_settings_1.TibboSettings()
+        return new lib_1.TibboSettings()
             .get(ipAddress, settingID)
             .then((result) => console.log(JSON.stringify(result, null, 2)));
     });
@@ -48,7 +57,7 @@ if (require.main == module) {
         .argument('<settingValue>', 'New value to set for the setting on the Tibbo device')
         .action((ipAddress, settingID, settingValue) => {
         validateDeviceAddress(ipAddress);
-        return new tibbo_settings_1.TibboSettings()
+        return new lib_1.TibboSettings()
             .set(ipAddress, settingID, settingValue)
             .then((result) => console.log(JSON.stringify(result, null, 2)));
     });
@@ -58,7 +67,7 @@ if (require.main == module) {
         .argument('<ipAddress>', 'IP address of Tibbo device')
         .action((ipAddress) => {
         validateDeviceAddress(ipAddress);
-        return new tibbo_settings_1.TibboSettings()
+        return new lib_1.TibboSettings()
             .initialize(ipAddress)
             .then((result) => console.log(JSON.stringify(result, null, 2)));
     });

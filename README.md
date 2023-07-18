@@ -6,6 +6,9 @@
 
 A library/CLI tool to manage Tibbo devices
 
+```shell
+$ npx tibbo-device-api
+```
 
 ## Supported Features
 
@@ -19,6 +22,8 @@ A library/CLI tool to manage Tibbo devices
   * Set a setting
   * View a setting
   * Initialize settings
+* Info
+  * Query basic device info (like firmware version)
 
 ## Usage
 ### CLI

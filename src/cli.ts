@@ -1,7 +1,6 @@
 #! /usr/bin/env node
 import { program } from 'commander';
-import { TibboTables } from './lib';
-import { TibboSettings } from './lib/tibbo-settings';
+import { TibboQuery, TibboTables, TibboSettings } from './lib';
 
 if (require.main == module) {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -18,6 +17,17 @@ if (require.main == module) {
     .name('tibbo-device-api')
     .version(packageInfo.version)
     .argument('<ipAddress>', 'IP address of Tibbo device');
+
+  program
+    .command('query')
+    .summary('Query device info')
+    .argument('<ipAddress>', 'IP address of Tibbo device')
+    .action((ipAddress) => {
+      validateDeviceAddress(ipAddress);
+      return new TibboQuery()
+        .query(ipAddress)
+        .then((result) => console.log(JSON.stringify(result, null, 2)));
+    });
 
   const settings = program
     .command('settings')

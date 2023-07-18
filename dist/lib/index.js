@@ -17,3 +17,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./types"), exports);
 __exportStar(require("./tibbo-tables"), exports);
 __exportStar(require("./tibbo-settings"), exports);
+__exportStar(require("./tibbo-query"), exports);
