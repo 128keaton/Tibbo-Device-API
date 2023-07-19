@@ -9,7 +9,7 @@
 A library/CLI tool to manage Tibbo devices
 
 ```shell
-$ npx tibbo-device-api
+$ npm install @vipstorage/tibbo-device-api
 ```
 
 ## Supported Features
@@ -60,6 +60,9 @@ $ npx tibbo-device-api
 
 ### CLI
 
+```shell
+$ npx tibbo-device-api
+```
 
 Example output of `npx tibbo-device-api tables fetch 0.0.0.0`:
 ```json
