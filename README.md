@@ -30,6 +30,9 @@ $ npm install @vipstorage/tibbo-device-api
   * Reboot device
 
 ## Changelog
+### 0.0.8
+* Fixes issue where setting description was not added to setting object
+
 ### 0.0.7
 * Adds reboot function
 

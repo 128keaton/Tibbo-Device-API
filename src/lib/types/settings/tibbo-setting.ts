@@ -5,6 +5,7 @@ export class TibboSetting {
   type: string;
   control: string;
 
+  readonly description?: string;
   readonly value: any;
   readonly rawValue: number | string;
 
@@ -19,6 +20,7 @@ export class TibboSetting {
       id: string;
       type: string;
       control: string;
+      description?: string;
       validation?: TibboSettingValidation;
       valueMapping?: TibboValueMapping;
     },
@@ -36,6 +38,7 @@ export class TibboSetting {
 
     if (!!raw.valueMapping) this.valueMapping = raw.valueMapping;
 
+    this.description = raw.description;
     this.value = !!this.valueMapping
       ? this.mapValue(this.rawValue)
       : this.rawValue;

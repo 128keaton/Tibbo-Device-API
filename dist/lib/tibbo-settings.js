@@ -146,7 +146,7 @@ class TibboSettings {
             settingObject.valueMapping = this.parseValueMapping(splitSetting.pop());
         if (splitSetting.length === 5)
             settingObject.validation = this.parseValidation(splitSetting.pop());
-        splitSetting.slice(0, splitSetting.length - 1).forEach((s) => {
+        splitSetting.forEach((s) => {
             const [rawKey, value] = s.split('=');
             settingObject[this.getSettingKey(rawKey)] = value;
         });

@@ -20,6 +20,7 @@ describe('test TibboSetting', () => {
             id: 'setting1',
             type: 'STRING',
             control: 'STATIC',
+            description: 'TEST',
             valueMapping: {
                 0: 'Nope',
                 1: 'Yep'
@@ -27,6 +28,7 @@ describe('test TibboSetting', () => {
         });
 
         expect(setting.value).toEqual('Nope');
+        expect(setting.description).toEqual('TEST');
         expect(setting.mapValue(1)).toEqual('Yep');
         expect(setting.rawValue).toEqual(0);
     });

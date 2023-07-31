@@ -43,6 +43,7 @@ describe('TibboSettings', () => {
     expect(response[0].id).toEqual('group1');
     expect(response[0].displayName).toEqual('General');
     expect(response[0].settings[0].id).toEqual('SETTING_ONE');
+    expect(response[0].settings[0].description).toEqual('Demo Setting 1');
     expect(response[0].settings[1].value).toEqual(1);
   });
 

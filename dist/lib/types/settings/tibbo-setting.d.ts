@@ -3,6 +3,7 @@ export declare class TibboSetting {
     id: string;
     type: string;
     control: string;
+    readonly description?: string;
     readonly value: any;
     readonly rawValue: number | string;
     private readonly greaterThan?;
@@ -13,6 +14,7 @@ export declare class TibboSetting {
         id: string;
         type: string;
         control: string;
+        description?: string;
         validation?: TibboSettingValidation;
         valueMapping?: TibboValueMapping;
     });

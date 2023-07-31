@@ -5,6 +5,7 @@ class TibboSetting {
     id;
     type;
     control;
+    description;
     value;
     rawValue;
     greaterThan;
@@ -23,6 +24,7 @@ class TibboSetting {
         }
         if (!!raw.valueMapping)
             this.valueMapping = raw.valueMapping;
+        this.description = raw.description;
         this.value = !!this.valueMapping
             ? this.mapValue(this.rawValue)
             : this.rawValue;

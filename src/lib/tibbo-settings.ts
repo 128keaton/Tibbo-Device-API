@@ -176,6 +176,7 @@ export class TibboSettings {
       id: string;
       type: string;
       control: string;
+      description?: string;
       validation?: TibboSettingValidation;
       valueMapping?: TibboValueMapping;
     } = {
@@ -199,7 +200,7 @@ export class TibboSettings {
         splitSetting.pop() as string,
       );
 
-    splitSetting.slice(0, splitSetting.length - 1).forEach((s) => {
+    splitSetting.forEach((s) => {
       const [rawKey, value] = s.split('=');
       (settingObject as any)[this.getSettingKey(rawKey)] = value;
     });
