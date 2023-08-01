@@ -1,6 +1,5 @@
 import { TibboSetting, TibboSettingGroup } from './types';
 export declare class TibboSettings {
-    private groups;
     /**
      * Get all settings from the Tibbo device
      *

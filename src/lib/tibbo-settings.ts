@@ -7,8 +7,6 @@ import {
 import { TibboRequests } from './tibbo-requests';
 
 export class TibboSettings {
-  private groups: TibboSettingGroup[] = [];
-
   /**
    * Get all settings from the Tibbo device
    *
@@ -163,6 +161,8 @@ export class TibboSettings {
   private async parse(settingsDef: string, deviceAddress: string) {
     let currentGroup: TibboSettingGroup | undefined = undefined;
 
+    const groups: TibboSettingGroup[] = [];
+
     const splitSettingsDef = settingsDef.split(';\r\n');
     for (const line1 of splitSettingsDef.filter(
       (line) => !line.includes('settings.xtxt'),
@@ -172,7 +172,7 @@ export class TibboSettings {
       if (splitLine.includes('T=GROUP')) {
         currentGroup = this.parseGroup(line1);
 
-        this.groups.push(currentGroup);
+        groups.push(currentGroup);
       } else if (currentGroup !== undefined) {
         currentGroup.settings.push(
           await this.parseSetting(line1, deviceAddress),
@@ -180,7 +180,7 @@ export class TibboSettings {
       }
     }
 
-    return this.groups;
+    return groups;
   }
 
   /**

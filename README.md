@@ -30,6 +30,9 @@ $ npm install @vipstorage/tibbo-device-api
   * Reboot device
 
 ## Changelog
+### 0.1.0
+* Fixes bug where groups were NOT cleared
+
 ### 0.0.9
 * Adds ability to import/export settings
 

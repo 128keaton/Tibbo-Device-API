@@ -4,7 +4,6 @@ exports.TibboSettings = void 0;
 const types_1 = require("./types");
 const tibbo_requests_1 = require("./tibbo-requests");
 class TibboSettings {
-    groups = [];
     /**
      * Get all settings from the Tibbo device
      *
@@ -115,18 +114,19 @@ class TibboSettings {
      */
     async parse(settingsDef, deviceAddress) {
         let currentGroup = undefined;
+        const groups = [];
         const splitSettingsDef = settingsDef.split(';\r\n');
         for (const line1 of splitSettingsDef.filter((line) => !line.includes('settings.xtxt'))) {
             const splitLine = line1.split(';');
             if (splitLine.includes('T=GROUP')) {
                 currentGroup = this.parseGroup(line1);
-                this.groups.push(currentGroup);
+                groups.push(currentGroup);
             }
             else if (currentGroup !== undefined) {
                 currentGroup.settings.push(await this.parseSetting(line1, deviceAddress));
             }
         }
-        return this.groups;
+        return groups;
     }
     /**
      * Parse a validation line like `V=SETTING_ONE<=1&&SETTING_ONE>=0?"":"Value must be between 0 and 1"`
