@@ -18,7 +18,7 @@ const mockFetch = () => {
       if (!!init) {
         if (init.body === 'e=s&a=cmd&p=&cmd=GSETTING_NAME1') {
           return Promise.resolve(new Response('BA1\n'));
-        } else if (init.body === 'e=s&a=cmd&p=&cmd=SSETTING_ONE%40On') {
+        } else if (`${init.body || ''}`.includes('e=s&a=cmd&p=&cmd=S')) {
           return Promise.resolve(new Response('BA1\r'));
         } else if (init.body === 'e=s&a=cmd&p=&cmd=I') {
           return Promise.resolve(new Response('BA\r'));
@@ -26,6 +26,7 @@ const mockFetch = () => {
           return Promise.resolve(new Response('A1\n'));
         }
       }
+
       return Promise.resolve(new Response());
     },
   );
@@ -50,11 +51,43 @@ describe('TibboSettings', () => {
   test('set setting', async () => {
     const tibboSettings = new TibboSettings();
 
+    const deviceAddress = '0.0.0.0';
+    const settingID = 'SETTING_ONE';
     mockFetch();
 
-    const response = await tibboSettings.set('0.0.0.0', 'SETTING_ONE', 1);
+    const response = await tibboSettings.set(deviceAddress, settingID, 1);
 
-    expect(response).toEqual(true);
+    expect(response).toEqual({ deviceAddress, settingID, didSucceed: true });
+  });
+
+  test('set settings', async () => {
+    const tibboSettings = new TibboSettings();
+
+    mockFetch();
+
+    const updatedSettings = {
+      SETTING_ONE: 1,
+      SETTING_NAME1: 3,
+    };
+
+    const response = await tibboSettings.setMultiple(
+      '0.0.0.0',
+      updatedSettings,
+    );
+
+    const responseSettingOne = {
+      settingID: 'SETTING_ONE',
+      deviceAddress: '0.0.0.0',
+      didSucceed: true,
+    };
+
+    const responseSettingTwo = {
+      settingID: 'SETTING_NAME1',
+      deviceAddress: '0.0.0.0',
+      didSucceed: true,
+    };
+
+    expect(response).toEqual([responseSettingOne, responseSettingTwo]);
   });
 
   test('set invalid setting', async () => {
@@ -62,6 +95,32 @@ describe('TibboSettings', () => {
 
     await expect(
       tibboSettings.set('0.0.0.0', 'SETTING_INVALID', 1),
+    ).rejects.toThrow(Error);
+  });
+
+  test('set multiple settings that do not exist', async () => {
+    const tibboSettings = new TibboSettings();
+
+    const updatedSettings = {
+      BAD_SETTING_ONE: 4,
+      BAD_SETTING_TWO: 257,
+    };
+
+    await expect(
+      tibboSettings.setMultiple('0.0.0.0', updatedSettings),
+    ).rejects.toThrow(Error);
+  });
+
+  test('set multiple invalid setting', async () => {
+    const tibboSettings = new TibboSettings();
+
+    const updatedSettings = {
+      SETTING_ONE: 4,
+      SETTING_NAME1: 257,
+    };
+
+    await expect(
+      tibboSettings.setMultiple('0.0.0.0', updatedSettings),
     ).rejects.toThrow(Error);
   });
 
@@ -87,6 +146,50 @@ describe('TibboSettings', () => {
     expect(response.value).toEqual('On');
   });
 
+  test('export settings', async () => {
+    const tibboSettings = new TibboSettings();
+
+    mockFetch();
+
+    const response = await tibboSettings.export('0.0.0.0');
+    const exportString = JSON.parse(`{"SETTING_ONE":1,"SETTING_NAME1":1,"stg2":0}`);
+
+    expect(response).toEqual(exportString);
+  });
+
+  test('import settings', async () => {
+    const tibboSettings = new TibboSettings();
+
+    mockFetch();
+
+    const exportString = `{"SETTING_ONE":1,"SETTING_NAME1":1,"stg2":0}`;
+    const response = await tibboSettings.import('0.0.0.0', exportString);
+
+    const responseSettingOne = {
+      settingID: 'SETTING_ONE',
+      deviceAddress: '0.0.0.0',
+      didSucceed: true,
+    };
+
+    const responseSettingTwo = {
+      settingID: 'SETTING_NAME1',
+      deviceAddress: '0.0.0.0',
+      didSucceed: true,
+    };
+
+    const responseSettingThree = {
+      settingID: 'stg2',
+      deviceAddress: '0.0.0.0',
+      didSucceed: true,
+    };
+
+    expect(response).toEqual([
+      responseSettingOne,
+      responseSettingTwo,
+      responseSettingThree,
+    ]);
+  });
+
   test('get invalid setting', async () => {
     const tibboSettings = new TibboSettings();
 
@@ -97,9 +200,9 @@ describe('TibboSettings', () => {
 
   test('initialize settings', async () => {
     const tibboSettings = new TibboSettings();
+    const deviceAddress = '0.0.0.0';
+    const response = await tibboSettings.initialize(deviceAddress);
 
-    const response = await tibboSettings.initialize('0.0.0.0');
-
-    expect(response).toEqual(true);
+    expect(response).toEqual({ deviceAddress, didSucceed: true });
   });
 });

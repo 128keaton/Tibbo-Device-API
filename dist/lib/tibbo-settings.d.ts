@@ -21,13 +21,52 @@ export declare class TibboSettings {
      * @param settingID Name/ID of the setting
      * @param settingValue New value for the setting
      */
-    set(deviceAddress: string, settingID: string, settingValue: string | number): Promise<boolean>;
+    set(deviceAddress: string, settingID: string, settingValue: string | number): Promise<{
+        settingID: string;
+        deviceAddress: string;
+        didSucceed: boolean;
+    }>;
+    /**
+     * Set multiple settings
+     *
+     * @param deviceAddress IP address of the Tibbo device
+     * @param settings key/value object with setting IDs and setting values
+     */
+    setMultiple(deviceAddress: string, settings: {
+        [key: string]: string | number;
+    }): Promise<{
+        settingID: string;
+        deviceAddress: string;
+        didSucceed: boolean;
+    }[]>;
+    /**
+     * Export the device's current settings to String
+     *
+     * @param deviceAddress IP address of the Tibbo device
+     */
+    export(deviceAddress: string): Promise<{
+        [key: string]: string | number;
+    }>;
+    /**
+     * Import JSON settings to device
+     *
+     * @param deviceAddress IP address of the Tibbo device
+     * @param raw raw key/value JSON string of setting IDs and values
+     */
+    import(deviceAddress: string, raw: string): Promise<{
+        settingID: string;
+        deviceAddress: string;
+        didSucceed: boolean;
+    }[]>;
     /**
      * Initialize the Tibbo device's settings, i.e. reset them to their defaults
      *
      * @param deviceAddress IP address of the Tibbo device
      */
-    initialize(deviceAddress: string): Promise<boolean>;
+    initialize(deviceAddress: string): Promise<{
+        deviceAddress: string;
+        didSucceed: boolean;
+    }>;
     /**
      * Parse the raw settings definition
      * @param settingsDef

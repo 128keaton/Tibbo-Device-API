@@ -6,6 +6,7 @@ const lib_1 = require("./lib");
 if (require.main == module) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const packageInfo = require('../package.json');
+    const stdin = '';
     const validateDeviceAddress = (deviceAddress) => {
         if (!deviceAddress.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/))
             commander_1.program.error(`error: invalid IP address: '${deviceAddress}'`);
@@ -70,6 +71,27 @@ if (require.main == module) {
         return new lib_1.TibboSettings()
             .set(ipAddress, settingID, settingValue)
             .then((result) => console.log(result ? 'Success' : 'Error'));
+    });
+    settings
+        .command('export')
+        .summary('Export the settings on the device')
+        .argument('<ipAddress>', 'IP address of Tibbo device')
+        .action((ipAddress) => {
+        validateDeviceAddress(ipAddress);
+        return new lib_1.TibboSettings()
+            .export(ipAddress)
+            .then((result) => console.log(JSON.stringify(JSON.stringify(result))));
+    });
+    settings
+        .command('import')
+        .summary('Import raw settings to the device')
+        .argument('<ipAddress>', 'IP address of Tibbo device')
+        .argument('<rawSettings>', 'Raw JSON settings string')
+        .action((ipAddress, rawSettings) => {
+        validateDeviceAddress(ipAddress);
+        return new lib_1.TibboSettings()
+            .import(ipAddress, rawSettings)
+            .then((result) => console.log(JSON.stringify(result, null, 2)));
     });
     settings
         .command('initialize')

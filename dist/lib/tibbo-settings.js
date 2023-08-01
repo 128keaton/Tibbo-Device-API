@@ -57,6 +57,49 @@ class TibboSettings {
         return this.setSettingValue(deviceAddress, settingID, setting.mapValue(settingValue));
     }
     /**
+     * Set multiple settings
+     *
+     * @param deviceAddress IP address of the Tibbo device
+     * @param settings key/value object with setting IDs and setting values
+     */
+    async setMultiple(deviceAddress, settings) {
+        const currentSettings = (await this.getAll(deviceAddress)).flatMap((settingGroup) => settingGroup.settings);
+        const promises = Object.keys(settings).map((settingID) => {
+            const setting = currentSettings.find((setting) => setting.id === settingID);
+            const settingValue = settings[settingID];
+            if (!setting)
+                throw new Error(`Could not find setting with ID '${settingID}'`);
+            const validationError = setting.validateValue(settingValue);
+            if (!!validationError)
+                throw new Error(validationError);
+            return this.setSettingValue(deviceAddress, settingID, setting.mapValue(settingValue));
+        });
+        return Promise.all(promises);
+    }
+    /**
+     * Export the device's current settings to String
+     *
+     * @param deviceAddress IP address of the Tibbo device
+     */
+    async export(deviceAddress) {
+        const currentSettings = (await this.getAll(deviceAddress)).flatMap((settingGroup) => settingGroup.settings);
+        const settingsExported = {};
+        currentSettings.forEach((setting) => {
+            settingsExported[setting.id] = setting.rawValue;
+        });
+        return settingsExported;
+    }
+    /**
+     * Import JSON settings to device
+     *
+     * @param deviceAddress IP address of the Tibbo device
+     * @param raw raw key/value JSON string of setting IDs and values
+     */
+    async import(deviceAddress, raw) {
+        const settings = JSON.parse(raw);
+        return this.setMultiple(deviceAddress, settings);
+    }
+    /**
      * Initialize the Tibbo device's settings, i.e. reset them to their defaults
      *
      * @param deviceAddress IP address of the Tibbo device
@@ -240,7 +283,12 @@ class TibboSettings {
             p: '',
             cmd: `S${settingID}@${settingValue}`,
         });
-        return valueResponse.slice(1, 2) === 'A';
+        const didSucceed = valueResponse.slice(1, 2) === 'A';
+        return {
+            settingID,
+            deviceAddress,
+            didSucceed,
+        };
     }
     /**
      * Performs the POST request to initialize the Tibbo device's settings
@@ -254,7 +302,11 @@ class TibboSettings {
             p: '',
             cmd: `I`,
         });
-        return initializeResponse.slice(1, 2) === 'A';
+        const didSucceed = initializeResponse.slice(1, 2) === 'A';
+        return {
+            deviceAddress,
+            didSucceed,
+        };
     }
 }
 exports.TibboSettings = TibboSettings;
