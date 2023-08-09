@@ -180,5 +180,23 @@ if (require.main == module) {
         .then((result) => console.log(result ? 'Success' : 'Error'));
     });
 
+  const command = program
+    .command('command')
+    .summary('Run external commands on the device');
+
+  command
+    .command('run')
+    .description('Run a command on the device with optional value')
+    .argument('<ipAddress>', 'IP address of the Tibbo device')
+    .argument('<command>', 'Name of the command')
+    .option('-v --value', 'Optional value to send')
+    .action((ipAddress, command, value) => {
+      validateDeviceAddress(ipAddress);
+
+      return new TibboFunctions()
+        .runCommand(ipAddress, command, value)
+        .then((result) => console.log(result ? 'Success' : 'Error'));
+    });
+
   program.parse();
 }

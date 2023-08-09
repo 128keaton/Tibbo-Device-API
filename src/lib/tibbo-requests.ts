@@ -39,6 +39,6 @@ export class TibboRequests {
       method: 'POST',
       body: query.toString(),
       timeout,
-    }).then((response) => response.text());
+    });
   }
 }

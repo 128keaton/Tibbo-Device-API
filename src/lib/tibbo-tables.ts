@@ -49,7 +49,7 @@ export class TibboTables {
       a: 'delete',
       row: rowID,
       table: tableName,
-    }).then((response) => response === '');
+    }).then((response) => response.ok);
   }
 
   /**
@@ -66,7 +66,7 @@ export class TibboTables {
       a: 'add',
       row: rowData,
       table: tableName,
-    }).then((response) => response === '');
+    }).then((response) => response.ok);
   }
 
   /** @internal **/

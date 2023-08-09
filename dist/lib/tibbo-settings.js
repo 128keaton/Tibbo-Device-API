@@ -262,7 +262,7 @@ class TibboSettings {
             a: 'cmd',
             p: '',
             cmd: `G${settingID}`,
-        });
+        }).then((result) => result.text());
         const clean = valueResponse.slice(2, valueResponse.length - 1);
         if (isNaN(Number(clean)))
             return clean;
@@ -282,7 +282,7 @@ class TibboSettings {
             a: 'cmd',
             p: '',
             cmd: `S${settingID}@${settingValue}`,
-        });
+        }).then((result) => result.text());
         const didSucceed = valueResponse.slice(1, 2) === 'A';
         return {
             settingID,
@@ -301,7 +301,7 @@ class TibboSettings {
             a: 'cmd',
             p: '',
             cmd: `I`,
-        });
+        }).then((result) => result.text());
         const didSucceed = initializeResponse.slice(1, 2) === 'A';
         return {
             deviceAddress,

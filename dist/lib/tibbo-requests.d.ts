@@ -9,5 +9,5 @@ export declare class TibboRequests {
         [key: string]: string | number | null;
         e: string;
         p: string | null;
-    }, timeout?: number): Promise<string>;
+    }, timeout?: number): Promise<import("node-fetch").Response>;
 }

@@ -28,8 +28,12 @@ $ npm install @vipstorage/tibbo-device-api
   * Query basic device info (like firmware version)
 * Functions
   * Reboot device
+  * Run command
 
 ## Changelog
+### 0.1.0
+* Adds ability to run command
+
 ### 0.1.0
 * Fixes bug where groups were NOT cleared
 

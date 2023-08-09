@@ -21,13 +21,26 @@ export class TibboFunctions {
           // We expect this since the device just dies immediately
           if (err.type !== 'request-timeout') {
             resolve(false);
-            console.error(err);
-            return;
+            return err;
           }
 
           resolve(true);
         })
-        .then(() => resolve(false));
+        .then((response) => resolve(response.ok));
     });
+  }
+
+  public runCommand(
+    deviceAddress: string,
+    commandName: string,
+    commandInput?: string,
+  ) {
+    return TibboRequests.postPlainRequest(deviceAddress, {
+      p: '',
+      e: 'f',
+      action: 'SET',
+      variable: commandName,
+      value: commandInput || 'undefined',
+    }).then((result) => result.ok);
   }
 }

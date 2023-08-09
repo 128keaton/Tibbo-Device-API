@@ -157,5 +157,20 @@ if (require.main == module) {
             .addRow(rowData, ipAddress, tableName)
             .then((result) => console.log(result ? 'Success' : 'Error'));
     });
+    const command = commander_1.program
+        .command('command')
+        .summary('Run external commands on the device');
+    command
+        .command('run')
+        .description('Run a command on the device with optional value')
+        .argument('<ipAddress>', 'IP address of the Tibbo device')
+        .argument('<command>', 'Name of the command')
+        .option('-v --value', 'Optional value to send')
+        .action((ipAddress, command, value) => {
+        validateDeviceAddress(ipAddress);
+        return new lib_1.TibboFunctions()
+            .runCommand(ipAddress, command, value)
+            .then((result) => console.log(result ? 'Success' : 'Error'));
+    });
     commander_1.program.parse();
 }

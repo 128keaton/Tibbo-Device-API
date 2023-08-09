@@ -8,13 +8,13 @@ export default {
   transform: {
     "^.+\\.(t|j)s$": "ts-jest"
   },
-  "coverageReporters": [
+  coverageReporters: [
     "json-summary",
     "html"
   ],
   testEnvironment: "node",
   rootDir: "src",
-  "collectCoverageFrom": [
+  collectCoverageFrom: [
     "**/*.(t|j)s",
     "!**/node_modules/**",
     "!**/vendor/**",
@@ -31,5 +31,9 @@ export default {
     "!**/cli.ts"
   ],
   collectCoverage: true,
-  coverageDirectory: "../coverage"
+  coverageDirectory: "../coverage",
+  automock: false,
+  setupFiles: [
+    './test/test-setup.js'
+  ]
 };

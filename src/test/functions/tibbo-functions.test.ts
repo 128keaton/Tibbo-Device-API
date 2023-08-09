@@ -1,9 +1,7 @@
-import {TibboFunctions, TibboQuery} from '../../lib';
-import fetch, {FetchError} from 'node-fetch';
+import {TibboFunctions} from '../../lib';
+import fetchMock from "jest-fetch-mock";
+require('jest-fetch-mock').enableMocks()
 
-jest.mock('node-fetch');
-
-const { Response } = jest.requireActual('node-fetch');
 
 let timeoutSpy: any;
 afterEach(() => {
@@ -15,32 +13,16 @@ afterEach(() => {
     }
 })
 
-const mockFetch = () => {
-    return (fetch as jest.MockedFunction<typeof fetch>).mockImplementation(
-        (url) => {
-               if (`${url}`.includes('0.0.0.0')) {
-                   return new Promise(resolve => {
-                       timeoutSpy = setTimeout(() => resolve(new Response('C')), 1800)
-                   })
-               } else if (`${url}`.includes('1.1.1.1')) {
-                   return new Promise(resolve => {
-                       timeoutSpy = setTimeout(() =>   resolve(new Response('\u0002C\r')), 100);
-                   })
-               } else {
-                   return new Promise((resolve, reject) => {
-                       reject(FetchError);
-                   })
-               }
-        },
-    );
-};
+beforeEach(() => {
+    fetchMock.resetMocks();
+})
+
 
 describe('TibboFunctions', () => {
     test('reboot device', async () => {
         const functions = new TibboFunctions();
 
-        mockFetch();
-
+        fetchMock.mockResponseOnce('');
         const response = functions.reboot('0.0.0.0');
 
         await expect(response).resolves.toEqual(true);
@@ -48,24 +30,26 @@ describe('TibboFunctions', () => {
 
     test('invalid reboot device', async () => {
         const functions = new TibboFunctions();
-
-        mockFetch();
-
-        const response = await functions.reboot('1.1.1.1');
+        fetchMock.mockRejectOnce(new Error('request-timeout'))
+        const response = await functions.reboot('1.4.1.1');
 
         expect(response).toEqual(false);
     });
 
-    test('invalid reboot device 2', async () => {
+
+    test('send device command', async () => {
         const functions = new TibboFunctions();
+        fetchMock.mockResponseOnce('');
+        const response = functions.runCommand('3.3.3.3', 'TEST_CMD');
 
-        mockFetch();
-
-        const response = await functions.reboot('1.2.2.1');
-
-        expect(response).toEqual(false);
+        await expect(response).resolves.toEqual(true);
     });
 
+    test('send bad device command', async () => {
+        const functions = new TibboFunctions();
+        fetchMock.mockRejectOnce(new Error('request-timeout'))
+        const response = functions.runCommand('3.5.3.3', 'TEST_CMD');
 
-
+        await expect(response).rejects.toBeInstanceOf(Error)
+    });
 });

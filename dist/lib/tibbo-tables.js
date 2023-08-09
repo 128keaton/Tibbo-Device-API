@@ -42,7 +42,7 @@ class TibboTables {
             a: 'delete',
             row: rowID,
             table: tableName,
-        }).then((response) => response === '');
+        }).then((response) => response.ok);
     }
     /**
      * Add a row to the given table
@@ -58,7 +58,7 @@ class TibboTables {
             a: 'add',
             row: rowData,
             table: tableName,
-        }).then((response) => response === '');
+        }).then((response) => response.ok);
     }
     /** @internal **/
     async _getTables(deviceAddress) {
