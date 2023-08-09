@@ -24,10 +24,14 @@ export class TibboRequests {
       p: string | null;
     },
     timeout?: number,
+    abortController?: AbortController,
   ) {
     const requestURL = Burly(`http://${deviceAddress}/api.html`);
 
     const query = new URLSearchParams();
+
+    const controller = abortController || new AbortController();
+    const signal = controller.signal;
 
     Object.keys(request).forEach((key) => {
       const value = request[key];
@@ -39,6 +43,7 @@ export class TibboRequests {
       method: 'POST',
       body: query.toString(),
       timeout,
+      signal,
     });
   }
 }

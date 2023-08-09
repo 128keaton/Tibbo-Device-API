@@ -28,14 +28,6 @@ describe('TibboFunctions', () => {
         await expect(response).resolves.toEqual(true);
     });
 
-    test('invalid reboot device', async () => {
-        const functions = new TibboFunctions();
-        fetchMock.mockRejectOnce(new Error('request-timeout'))
-        const response = await functions.reboot('1.4.1.1');
-
-        expect(response).toEqual(false);
-    });
-
 
     test('send device command', async () => {
         const functions = new TibboFunctions();

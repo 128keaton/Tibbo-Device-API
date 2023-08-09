@@ -15,9 +15,11 @@ class TibboRequests {
         });
         return (0, node_fetch_1.default)(requestURL.get).then((response) => response.text());
     }
-    static postPlainRequest(deviceAddress, request, timeout) {
+    static postPlainRequest(deviceAddress, request, timeout, abortController) {
         const requestURL = (0, kb_burly_1.Burly)(`http://${deviceAddress}/api.html`);
         const query = new URLSearchParams();
+        const controller = abortController || new AbortController();
+        const signal = controller.signal;
         Object.keys(request).forEach((key) => {
             const value = request[key];
             if (value !== null)
@@ -27,6 +29,7 @@ class TibboRequests {
             method: 'POST',
             body: query.toString(),
             timeout,
+            signal,
         });
     }
 }

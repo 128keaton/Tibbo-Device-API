@@ -2,31 +2,31 @@ import { TibboRequests } from './tibbo-requests';
 
 export class TibboFunctions {
   public reboot(deviceAddress: string): Promise<boolean> {
-    return new Promise((resolve) => {
+    const controller = new AbortController();
+
+    return new Promise(async (resolve) => {
       setTimeout(() => {
+        controller.abort('timeout');
         resolve(true);
       }, 1000);
 
-      TibboRequests.postPlainRequest(
-        deviceAddress,
-        {
-          p: '',
-          e: 's',
-          a: 'cmd',
-          cmd: 'E',
-        },
-        500,
-      )
-        .catch((err) => {
-          // We expect this since the device just dies immediately
-          if (err.type !== 'request-timeout') {
-            resolve(false);
-            return err;
-          }
-
-          resolve(true);
-        })
-        .then((response) => resolve(response.ok));
+      try {
+        await TibboRequests.postPlainRequest(
+          deviceAddress,
+          {
+            p: '',
+            e: 's',
+            a: 'cmd',
+            cmd: 'E',
+          },
+          1000,
+          controller,
+        );
+      } catch (e: any) {
+        if (e.type !== 'aborted') {
+          throw e;
+        }
+      }
     });
   }
 
