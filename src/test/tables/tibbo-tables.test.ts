@@ -80,6 +80,31 @@ describe('TibboTables', () => {
     expect(addedRow).toEqual(true);
   });
 
+  test('add table row structured', async () => {
+    const tibboTables = new TibboTables();
+
+    (fetch as jest.MockedFunction<typeof fetch>).mockImplementation(
+        (url, init) => {
+          if (
+              !!init &&
+              init.method === 'POST' &&
+              url === 'http://0.0.0.0/api.html'
+          ) {
+            return Promise.resolve(new Response(''));
+          }
+
+          return Promise.resolve(new Response(mockedTableResponse));
+        },
+    );
+
+    const addedRow = await tibboTables.addRowData({
+      ID: 1,
+      RAW: '12-2451'
+    }, '0.0.0.0', 'CREDS');
+
+    expect(addedRow).toEqual(true);
+  });
+
   test('delete table row', async () => {
     const tibboTables = new TibboTables();
 

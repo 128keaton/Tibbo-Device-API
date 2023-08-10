@@ -31,6 +31,10 @@ $ npm install @vipstorage/tibbo-device-api
   * Run command
 
 ## Changelog
+### 0.1.1
+* Adds ability to add a structured row
+* Fixes issue with empty table names
+
 ### 0.1.0
 * Adds ability to run command
 

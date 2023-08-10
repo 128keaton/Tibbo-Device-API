@@ -69,6 +69,45 @@ export class TibboTables {
     }).then((response) => response.ok);
   }
 
+  /**
+   * Add a structured row to the given table
+   *
+   * @param rowData A key/value object of a row like {"COL1":"value"}
+   * @param deviceAddress The IP address of the Tibbo device
+   * @param tableName The table name
+   *
+   * @returns true if added
+   */
+  public async addRowData(
+    rowData: { [key: string]: any },
+    deviceAddress: string,
+    tableName: string,
+  ) {
+    const tables = await this._getTables(deviceAddress);
+    const table = tables.find((table) => table.name === tableName);
+
+    if (!table)
+      throw new Error(
+        `Could not find table named '${tableName}' in '${tables
+          .map((t) => t.name)
+          .join(',')}'`,
+      );
+
+    const rowArray: string[] = [];
+
+    table.columns.forEach((col) => {
+      rowArray.push(rowData[col.identifier]);
+    });
+
+    return TibboRequests.postPlainRequest(deviceAddress, {
+      p: null,
+      e: 't',
+      a: 'add',
+      row: rowArray.join(','),
+      table: tableName,
+    }).then((response) => response.ok);
+  }
+
   /** @internal **/
   private async _getTables(deviceAddress: string) {
     const tablesMetaResponse = await TibboRequests.getPlainRequest(
@@ -81,7 +120,10 @@ export class TibboTables {
       },
     );
 
-    return tablesMetaResponse.split(',\r\n').map((raw) => new TibboTable(raw));
+    return tablesMetaResponse
+      .split(',\r\n')
+      .filter((raw) => raw.length > 0)
+      .map((raw) => new TibboTable(raw));
   }
 
   /** @internal **/

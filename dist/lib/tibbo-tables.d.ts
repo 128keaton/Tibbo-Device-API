@@ -29,6 +29,18 @@ export declare class TibboTables {
      * @returns true if added
      */
     addRow(rowData: string, deviceAddress: string, tableName: string): Promise<boolean>;
+    /**
+     * Add a structured row to the given table
+     *
+     * @param rowData A key/value object of a row like {"COL1":"value"}
+     * @param deviceAddress The IP address of the Tibbo device
+     * @param tableName The table name
+     *
+     * @returns true if added
+     */
+    addRowData(rowData: {
+        [key: string]: any;
+    }, deviceAddress: string, tableName: string): Promise<boolean>;
     /** @internal **/
     private _getTables;
     /** @internal **/
