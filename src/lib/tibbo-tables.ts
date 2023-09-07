@@ -5,6 +5,7 @@ export class TibboTables {
   /**
    * Get the tables on the Tibbo device given the IP address
    * @param deviceAddress The IP address of the Tibbo device
+   * @param auth a tuple of {username, password}
    * @returns array of TibboTable
    */
   public async get(
@@ -14,10 +15,10 @@ export class TibboTables {
       password: string;
     },
   ) {
-    const tables = await this._getTables(deviceAddress);
+    const tables = await this._getTables(deviceAddress, auth);
 
     return await Promise.all(
-      tables.map((table) => this._getTableRows(deviceAddress, table)),
+      tables.map((table) => this._getTableRows(deviceAddress, table, auth)),
     );
   }
 
@@ -25,10 +26,18 @@ export class TibboTables {
    * Get the rows of the given table
    * @param deviceAddress The IP address of the Tibbo device
    * @param tableName The table name
+   * @param auth a tuple of {username, password}
    * @returns array of TibboRow
    */
-  public async getRows(deviceAddress: string, tableName: string) {
-    const tables = await this._getTables(deviceAddress);
+  public async getRows(
+    deviceAddress: string,
+    tableName: string,
+    auth?: {
+      username: string;
+      password: string;
+    },
+  ) {
+    const tables = await this._getTables(deviceAddress, auth);
     const table = tables.find((table) => table.name === tableName);
 
     if (!table)
@@ -38,7 +47,9 @@ export class TibboTables {
           .join(',')}'`,
       );
 
-    return this._getTableRows(deviceAddress, table).then((table) => table.rows);
+    return this._getTableRows(deviceAddress, table, auth).then(
+      (table) => table.rows,
+    );
   }
 
   /**
@@ -46,16 +57,31 @@ export class TibboTables {
    * @param rowID The row's ID
    * @param deviceAddress The IP address of the Tibbo device
    * @param tableName The table name
+   * @param auth a tuple of {username, password}
    * @returns true if deleted
    */
-  public deleteRow(rowID: number, deviceAddress: string, tableName: string) {
-    return TibboRequests.postPlainRequest(deviceAddress, {
-      p: null,
-      e: 't',
-      a: 'delete',
-      row: rowID,
-      table: tableName,
-    }).then((response) => response.ok);
+  public deleteRow(
+    rowID: number,
+    deviceAddress: string,
+    tableName: string,
+    auth?: {
+      username: string;
+      password: string;
+    },
+  ) {
+    return TibboRequests.postPlainRequest(
+      deviceAddress,
+      {
+        p: null,
+        e: 't',
+        a: 'delete',
+        row: rowID,
+        table: tableName,
+      },
+      undefined,
+      undefined,
+      auth,
+    ).then((response) => response.ok);
   }
 
   /**
@@ -63,16 +89,31 @@ export class TibboTables {
    * @param rowData Row data in comma separated form i.e 'COL1,COL2'
    * @param deviceAddress The IP address of the Tibbo device
    * @param tableName The table name
+   * @param auth a tuple of {username, password}
    * @returns true if added
    */
-  public addRow(rowData: string, deviceAddress: string, tableName: string) {
-    return TibboRequests.postPlainRequest(deviceAddress, {
-      p: null,
-      e: 't',
-      a: 'add',
-      row: rowData,
-      table: tableName,
-    }).then((response) => response.ok);
+  public addRow(
+    rowData: string,
+    deviceAddress: string,
+    tableName: string,
+    auth?: {
+      username: string;
+      password: string;
+    },
+  ) {
+    return TibboRequests.postPlainRequest(
+      deviceAddress,
+      {
+        p: null,
+        e: 't',
+        a: 'add',
+        row: rowData,
+        table: tableName,
+      },
+      undefined,
+      undefined,
+      auth,
+    ).then((response) => response.ok);
   }
 
   /**
@@ -81,6 +122,7 @@ export class TibboTables {
    * @param rowData A key/value object of a row like {"COL1":"value"}
    * @param deviceAddress The IP address of the Tibbo device
    * @param tableName The table name
+   * @param auth a tuple of {username, password}
    *
    * @returns true if added
    */
@@ -88,8 +130,12 @@ export class TibboTables {
     rowData: { [key: string]: any },
     deviceAddress: string,
     tableName: string,
+    auth?: {
+      username: string;
+      password: string;
+    },
   ) {
-    const tables = await this._getTables(deviceAddress);
+    const tables = await this._getTables(deviceAddress, auth);
     const table = tables.find((table) => table.name === tableName);
 
     if (!table)
@@ -105,13 +151,19 @@ export class TibboTables {
       rowArray.push(rowData[col.identifier]);
     });
 
-    return TibboRequests.postPlainRequest(deviceAddress, {
-      p: null,
-      e: 't',
-      a: 'add',
-      row: rowArray.join(','),
-      table: tableName,
-    }).then((response) => response.ok);
+    return TibboRequests.postPlainRequest(
+      deviceAddress,
+      {
+        p: null,
+        e: 't',
+        a: 'add',
+        row: rowArray.join(','),
+        table: tableName,
+      },
+      undefined,
+      undefined,
+      auth,
+    ).then((response) => response.ok);
   }
 
   /** @internal **/

@@ -11,7 +11,7 @@ export class TibboSettings {
    * Get all settings from the Tibbo device
    *
    * @param deviceAddress IP address of the Tibbo
-   * @param auth
+   * @param auth a tuple of {username, password}
    */
   public async getAll(
     deviceAddress: string,
@@ -38,7 +38,7 @@ export class TibboSettings {
    *
    * @param deviceAddress IP address of the Tibbo
    * @param settingID Name/ID of the setting
-   * @param auth
+   * @param auth a tuple of {username, password}
    */
   public async get(
     deviceAddress: string,
@@ -67,7 +67,7 @@ export class TibboSettings {
    * @param deviceAddress IP address of the Tibbo
    * @param settingID Name/ID of the setting
    * @param settingValue New value for the setting
-   * @param auth
+   * @param auth a tuple of {username, password}
    */
   public async set(
     deviceAddress: string,
@@ -106,7 +106,7 @@ export class TibboSettings {
    *
    * @param deviceAddress IP address of the Tibbo device
    * @param settings key/value object with setting IDs and setting values
-   * @param auth
+   * @param auth a tuple of {username, password}
    */
   public async setMultiple(
     deviceAddress: string,
@@ -147,7 +147,7 @@ export class TibboSettings {
    * Export the device's current settings to String
    *
    * @param deviceAddress IP address of the Tibbo device
-   * @param auth
+   * @param auth a tuple of {username, password}
    */
   public async export(
     deviceAddress: string,
@@ -174,7 +174,7 @@ export class TibboSettings {
    *
    * @param deviceAddress IP address of the Tibbo device
    * @param raw raw key/value JSON string of setting IDs and values
-   * @param auth
+   * @param auth a tuple of {username, password}
    */
   public async import(
     deviceAddress: string,
@@ -193,7 +193,7 @@ export class TibboSettings {
    * Initialize the Tibbo device's settings, i.e. reset them to their defaults
    *
    * @param deviceAddress IP address of the Tibbo device
-   * @param auth
+   * @param auth a tuple of {username, password}
    */
   public async initialize(
     deviceAddress: string,
@@ -209,7 +209,7 @@ export class TibboSettings {
    * Parse the raw settings definition
    * @param settingsDef
    * @param deviceAddress
-   * @param auth
+   * @param auth a tuple of {username, password}
    * @private @internal
    */
   private async parse(
@@ -297,7 +297,7 @@ export class TibboSettings {
    * Parse a raw settings string like `I=SETTING_ONE;T=STRING;C=STATIC;D=Demo Setting 1;V=SETTING_ONE<=1&&SETTING_ONE>=0?"":"Value must be between 0 and 1";O=Off/0/On/1`
    * @param settingDef
    * @param deviceAddress
-   * @param auth
+   * @param auth a tuple of {username, password}
    * @private
    */
   private async parseSetting(
@@ -412,7 +412,7 @@ export class TibboSettings {
    *
    * @param deviceAddress IP address of the Tibbo device
    * @param settingID Name/ID of the setting
-   * @param auth
+   * @param auth a tuple of {username, password}
    * @private @internal
    */
   private async getSettingValue(
@@ -449,7 +449,7 @@ export class TibboSettings {
    * @param deviceAddress IP address of the Tibbo device
    * @param settingID Name/ID of the setting
    * @param settingValue New setting value
-   * @param auth
+   * @param auth a tuple of {username, password}
    * @private @internal
    */
   private async setSettingValue(
@@ -486,7 +486,7 @@ export class TibboSettings {
   /**
    * Performs the POST request to initialize the Tibbo device's settings
    * @param deviceAddress IP address of the Tibbo device
-   * @param auth
+   * @param auth a tuple of {username, password}
    * @private @internal
    */
   private async initializeSettings(

@@ -4,23 +4,35 @@ export declare class TibboSettings {
      * Get all settings from the Tibbo device
      *
      * @param deviceAddress IP address of the Tibbo
+     * @param auth a tuple of {username, password}
      */
-    getAll(deviceAddress: string): Promise<TibboSettingGroup[]>;
+    getAll(deviceAddress: string, auth?: {
+        username: string;
+        password: string;
+    }): Promise<TibboSettingGroup[]>;
     /**
      * Get a setting value from the Tibbo device
      *
      * @param deviceAddress IP address of the Tibbo
      * @param settingID Name/ID of the setting
+     * @param auth a tuple of {username, password}
      */
-    get(deviceAddress: string, settingID: string): Promise<TibboSetting>;
+    get(deviceAddress: string, settingID: string, auth?: {
+        username: string;
+        password: string;
+    }): Promise<TibboSetting>;
     /**
      * Set a setting value by the ID on the Tibbo device. This is validated against the rules set
      *
      * @param deviceAddress IP address of the Tibbo
      * @param settingID Name/ID of the setting
      * @param settingValue New value for the setting
+     * @param auth a tuple of {username, password}
      */
-    set(deviceAddress: string, settingID: string, settingValue: string | number): Promise<{
+    set(deviceAddress: string, settingID: string, settingValue: string | number, auth?: {
+        username: string;
+        password: string;
+    }): Promise<{
         settingID: string;
         deviceAddress: string;
         didSucceed: boolean;
@@ -30,9 +42,13 @@ export declare class TibboSettings {
      *
      * @param deviceAddress IP address of the Tibbo device
      * @param settings key/value object with setting IDs and setting values
+     * @param auth a tuple of {username, password}
      */
     setMultiple(deviceAddress: string, settings: {
         [key: string]: string | number;
+    }, auth?: {
+        username: string;
+        password: string;
     }): Promise<{
         settingID: string;
         deviceAddress: string;
@@ -42,8 +58,12 @@ export declare class TibboSettings {
      * Export the device's current settings to String
      *
      * @param deviceAddress IP address of the Tibbo device
+     * @param auth a tuple of {username, password}
      */
-    export(deviceAddress: string): Promise<{
+    export(deviceAddress: string, auth?: {
+        username: string;
+        password: string;
+    }): Promise<{
         [key: string]: string | number;
     }>;
     /**
@@ -51,8 +71,12 @@ export declare class TibboSettings {
      *
      * @param deviceAddress IP address of the Tibbo device
      * @param raw raw key/value JSON string of setting IDs and values
+     * @param auth a tuple of {username, password}
      */
-    import(deviceAddress: string, raw: string): Promise<{
+    import(deviceAddress: string, raw: string, auth?: {
+        username: string;
+        password: string;
+    }): Promise<{
         settingID: string;
         deviceAddress: string;
         didSucceed: boolean;
@@ -61,8 +85,12 @@ export declare class TibboSettings {
      * Initialize the Tibbo device's settings, i.e. reset them to their defaults
      *
      * @param deviceAddress IP address of the Tibbo device
+     * @param auth a tuple of {username, password}
      */
-    initialize(deviceAddress: string): Promise<{
+    initialize(deviceAddress: string, auth?: {
+        username: string;
+        password: string;
+    }): Promise<{
         deviceAddress: string;
         didSucceed: boolean;
     }>;
@@ -70,6 +98,7 @@ export declare class TibboSettings {
      * Parse the raw settings definition
      * @param settingsDef
      * @param deviceAddress
+     * @param auth a tuple of {username, password}
      * @private @internal
      */
     private parse;
@@ -89,6 +118,7 @@ export declare class TibboSettings {
      * Parse a raw settings string like `I=SETTING_ONE;T=STRING;C=STATIC;D=Demo Setting 1;V=SETTING_ONE<=1&&SETTING_ONE>=0?"":"Value must be between 0 and 1";O=Off/0/On/1`
      * @param settingDef
      * @param deviceAddress
+     * @param auth a tuple of {username, password}
      * @private
      */
     private parseSetting;
@@ -115,6 +145,7 @@ export declare class TibboSettings {
      *
      * @param deviceAddress IP address of the Tibbo device
      * @param settingID Name/ID of the setting
+     * @param auth a tuple of {username, password}
      * @private @internal
      */
     private getSettingValue;
@@ -124,12 +155,14 @@ export declare class TibboSettings {
      * @param deviceAddress IP address of the Tibbo device
      * @param settingID Name/ID of the setting
      * @param settingValue New setting value
+     * @param auth a tuple of {username, password}
      * @private @internal
      */
     private setSettingValue;
     /**
      * Performs the POST request to initialize the Tibbo device's settings
      * @param deviceAddress IP address of the Tibbo device
+     * @param auth a tuple of {username, password}
      * @private @internal
      */
     private initializeSettings;

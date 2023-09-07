@@ -8,23 +8,25 @@ class TibboSettings {
      * Get all settings from the Tibbo device
      *
      * @param deviceAddress IP address of the Tibbo
+     * @param auth a tuple of {username, password}
      */
-    async getAll(deviceAddress) {
+    async getAll(deviceAddress, auth) {
         const settingsDef = await tibbo_requests_1.TibboRequests.getPlainRequest(deviceAddress, {
             e: 's',
             a: 'def',
             p: '',
-        });
-        return this.parse(settingsDef, deviceAddress);
+        }, auth);
+        return this.parse(settingsDef, deviceAddress, auth);
     }
     /**
      * Get a setting value from the Tibbo device
      *
      * @param deviceAddress IP address of the Tibbo
      * @param settingID Name/ID of the setting
+     * @param auth a tuple of {username, password}
      */
-    async get(deviceAddress, settingID) {
-        const settings = await this.getAll(deviceAddress);
+    async get(deviceAddress, settingID, auth) {
+        const settings = await this.getAll(deviceAddress, auth);
         const setting = settings
             .find((group) => {
             return group.settings.find((setting) => setting.id === settingID);
@@ -40,9 +42,10 @@ class TibboSettings {
      * @param deviceAddress IP address of the Tibbo
      * @param settingID Name/ID of the setting
      * @param settingValue New value for the setting
+     * @param auth a tuple of {username, password}
      */
-    async set(deviceAddress, settingID, settingValue) {
-        const settings = await this.getAll(deviceAddress);
+    async set(deviceAddress, settingID, settingValue, auth) {
+        const settings = await this.getAll(deviceAddress, auth);
         const setting = settings
             .find((group) => {
             return group.settings.find((setting) => setting.id === settingID);
@@ -53,16 +56,17 @@ class TibboSettings {
         const validationError = setting.validateValue(settingValue);
         if (!!validationError)
             throw new Error(validationError);
-        return this.setSettingValue(deviceAddress, settingID, setting.mapValue(settingValue));
+        return this.setSettingValue(deviceAddress, settingID, setting.mapValue(settingValue), auth);
     }
     /**
      * Set multiple settings
      *
      * @param deviceAddress IP address of the Tibbo device
      * @param settings key/value object with setting IDs and setting values
+     * @param auth a tuple of {username, password}
      */
-    async setMultiple(deviceAddress, settings) {
-        const currentSettings = (await this.getAll(deviceAddress)).flatMap((settingGroup) => settingGroup.settings);
+    async setMultiple(deviceAddress, settings, auth) {
+        const currentSettings = (await this.getAll(deviceAddress, auth)).flatMap((settingGroup) => settingGroup.settings);
         const promises = Object.keys(settings).map((settingID) => {
             const setting = currentSettings.find((setting) => setting.id === settingID);
             const settingValue = settings[settingID];
@@ -71,7 +75,7 @@ class TibboSettings {
             const validationError = setting.validateValue(settingValue);
             if (!!validationError)
                 throw new Error(validationError);
-            return this.setSettingValue(deviceAddress, settingID, setting.mapValue(settingValue));
+            return this.setSettingValue(deviceAddress, settingID, setting.mapValue(settingValue), auth);
         });
         return Promise.all(promises);
     }
@@ -79,9 +83,10 @@ class TibboSettings {
      * Export the device's current settings to String
      *
      * @param deviceAddress IP address of the Tibbo device
+     * @param auth a tuple of {username, password}
      */
-    async export(deviceAddress) {
-        const currentSettings = (await this.getAll(deviceAddress)).flatMap((settingGroup) => settingGroup.settings);
+    async export(deviceAddress, auth) {
+        const currentSettings = (await this.getAll(deviceAddress, auth)).flatMap((settingGroup) => settingGroup.settings);
         const settingsExported = {};
         currentSettings.forEach((setting) => {
             settingsExported[setting.id] = setting.rawValue;
@@ -93,26 +98,29 @@ class TibboSettings {
      *
      * @param deviceAddress IP address of the Tibbo device
      * @param raw raw key/value JSON string of setting IDs and values
+     * @param auth a tuple of {username, password}
      */
-    async import(deviceAddress, raw) {
+    async import(deviceAddress, raw, auth) {
         const settings = JSON.parse(raw);
-        return this.setMultiple(deviceAddress, settings);
+        return this.setMultiple(deviceAddress, settings, auth);
     }
     /**
      * Initialize the Tibbo device's settings, i.e. reset them to their defaults
      *
      * @param deviceAddress IP address of the Tibbo device
+     * @param auth a tuple of {username, password}
      */
-    async initialize(deviceAddress) {
-        return this.initializeSettings(deviceAddress);
+    async initialize(deviceAddress, auth) {
+        return this.initializeSettings(deviceAddress, auth);
     }
     /**
      * Parse the raw settings definition
      * @param settingsDef
      * @param deviceAddress
+     * @param auth a tuple of {username, password}
      * @private @internal
      */
-    async parse(settingsDef, deviceAddress) {
+    async parse(settingsDef, deviceAddress, auth) {
         let currentGroup = undefined;
         const groups = [];
         const splitSettingsDef = settingsDef.split(';\r\n');
@@ -123,7 +131,7 @@ class TibboSettings {
                 groups.push(currentGroup);
             }
             else if (currentGroup !== undefined) {
-                currentGroup.settings.push(await this.parseSetting(line1, deviceAddress));
+                currentGroup.settings.push(await this.parseSetting(line1, deviceAddress, auth));
             }
         }
         return groups;
@@ -175,9 +183,10 @@ class TibboSettings {
      * Parse a raw settings string like `I=SETTING_ONE;T=STRING;C=STATIC;D=Demo Setting 1;V=SETTING_ONE<=1&&SETTING_ONE>=0?"":"Value must be between 0 and 1";O=Off/0/On/1`
      * @param settingDef
      * @param deviceAddress
+     * @param auth a tuple of {username, password}
      * @private
      */
-    async parseSetting(settingDef, deviceAddress) {
+    async parseSetting(settingDef, deviceAddress, auth) {
         const settingObject = {
             id: '',
             type: '',
@@ -193,7 +202,7 @@ class TibboSettings {
             const [rawKey, value] = s.split('=');
             settingObject[this.getSettingKey(rawKey)] = value;
         });
-        const value = await this.getSettingValue(deviceAddress, settingObject.id);
+        const value = await this.getSettingValue(deviceAddress, settingObject.id, auth);
         return new types_1.TibboSetting(value, settingObject);
     }
     /**
@@ -254,15 +263,16 @@ class TibboSettings {
      *
      * @param deviceAddress IP address of the Tibbo device
      * @param settingID Name/ID of the setting
+     * @param auth a tuple of {username, password}
      * @private @internal
      */
-    async getSettingValue(deviceAddress, settingID) {
+    async getSettingValue(deviceAddress, settingID, auth) {
         const valueResponse = await tibbo_requests_1.TibboRequests.postPlainRequest(deviceAddress, {
             e: 's',
             a: 'cmd',
             p: '',
             cmd: `G${settingID}`,
-        }).then((result) => result.text());
+        }, undefined, undefined, auth).then((result) => result.text());
         const clean = valueResponse.slice(2, valueResponse.length - 1);
         if (isNaN(Number(clean)))
             return clean;
@@ -274,15 +284,16 @@ class TibboSettings {
      * @param deviceAddress IP address of the Tibbo device
      * @param settingID Name/ID of the setting
      * @param settingValue New setting value
+     * @param auth a tuple of {username, password}
      * @private @internal
      */
-    async setSettingValue(deviceAddress, settingID, settingValue) {
+    async setSettingValue(deviceAddress, settingID, settingValue, auth) {
         const valueResponse = await tibbo_requests_1.TibboRequests.postPlainRequest(deviceAddress, {
             e: 's',
             a: 'cmd',
             p: '',
             cmd: `S${settingID}@${settingValue}`,
-        }).then((result) => result.text());
+        }, undefined, undefined, auth).then((result) => result.text());
         const didSucceed = valueResponse.slice(1, 2) === 'A';
         return {
             settingID,
@@ -293,15 +304,16 @@ class TibboSettings {
     /**
      * Performs the POST request to initialize the Tibbo device's settings
      * @param deviceAddress IP address of the Tibbo device
+     * @param auth a tuple of {username, password}
      * @private @internal
      */
-    async initializeSettings(deviceAddress) {
+    async initializeSettings(deviceAddress, auth) {
         const initializeResponse = await tibbo_requests_1.TibboRequests.postPlainRequest(deviceAddress, {
             e: 's',
             a: 'cmd',
             p: '',
             cmd: `I`,
-        }).then((result) => result.text());
+        }, undefined, undefined, auth).then((result) => result.text());
         const didSucceed = initializeResponse.slice(1, 2) === 'A';
         return {
             deviceAddress,

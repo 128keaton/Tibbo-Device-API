@@ -8,14 +8,21 @@ const kb_burly_1 = require("kb-burly");
 const node_fetch_1 = __importDefault(require("node-fetch"));
 /** @internal */
 class TibboRequests {
-    static getPlainRequest(deviceAddress, request) {
+    static getPlainRequest(deviceAddress, request, auth) {
         let requestURL = (0, kb_burly_1.Burly)(`http://${deviceAddress}/api.html`);
         Object.keys(request).forEach((key) => {
             requestURL = requestURL.addQuery(key, request[key]);
         });
-        return (0, node_fetch_1.default)(requestURL.get).then((response) => response.text());
+        let headers = {};
+        if (!!auth) {
+            headers = {
+                Authorization: 'Basic ' +
+                    Buffer.from(auth.username + ':' + auth.password).toString('base64'),
+            };
+        }
+        return (0, node_fetch_1.default)(requestURL.get, { headers }).then((response) => response.text());
     }
-    static postPlainRequest(deviceAddress, request, timeout, abortController) {
+    static postPlainRequest(deviceAddress, request, timeout, abortController, auth) {
         const requestURL = (0, kb_burly_1.Burly)(`http://${deviceAddress}/api.html`);
         const query = new URLSearchParams();
         const controller = abortController || new AbortController();
@@ -25,11 +32,19 @@ class TibboRequests {
             if (value !== null)
                 query.append(key, `${request[key]}`);
         });
+        let headers = {};
+        if (!!auth) {
+            headers = {
+                Authorization: 'Basic ' +
+                    Buffer.from(auth.username + ':' + auth.password).toString('base64'),
+            };
+        }
         return (0, node_fetch_1.default)(requestURL.get, {
             method: 'POST',
             body: query.toString(),
             timeout,
             signal,
+            headers,
         });
     }
 }
