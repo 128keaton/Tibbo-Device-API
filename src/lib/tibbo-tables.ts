@@ -7,7 +7,13 @@ export class TibboTables {
    * @param deviceAddress The IP address of the Tibbo device
    * @returns array of TibboTable
    */
-  public async get(deviceAddress: string) {
+  public async get(
+    deviceAddress: string,
+    auth?: {
+      username: string;
+      password: string;
+    },
+  ) {
     const tables = await this._getTables(deviceAddress);
 
     return await Promise.all(
@@ -109,7 +115,13 @@ export class TibboTables {
   }
 
   /** @internal **/
-  private async _getTables(deviceAddress: string) {
+  private async _getTables(
+    deviceAddress: string,
+    auth?: {
+      username: string;
+      password: string;
+    },
+  ) {
     const tablesMetaResponse = await TibboRequests.getPlainRequest(
       deviceAddress,
       {
@@ -118,6 +130,7 @@ export class TibboTables {
         type: 'table',
         p: '',
       },
+      auth,
     );
 
     return tablesMetaResponse
@@ -127,13 +140,24 @@ export class TibboTables {
   }
 
   /** @internal **/
-  private async _getTableRows(deviceAddress: string, table: TibboTable) {
-    return TibboRequests.getPlainRequest(deviceAddress, {
-      e: 't',
-      p: '',
-      a: 'rows',
-      table: table.name,
-    }).then((response) => {
+  private async _getTableRows(
+    deviceAddress: string,
+    table: TibboTable,
+    auth?: {
+      username: string;
+      password: string;
+    },
+  ) {
+    return TibboRequests.getPlainRequest(
+      deviceAddress,
+      {
+        e: 't',
+        p: '',
+        a: 'rows',
+        table: table.name,
+      },
+      auth,
+    ).then((response) => {
       response
         .split('\r\n')
         .slice(1)

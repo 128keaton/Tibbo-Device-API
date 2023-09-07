@@ -6,6 +6,10 @@ export class TibboRequests {
   public static getPlainRequest(
     deviceAddress: string,
     request: { [key: string]: string; e: string; p: string },
+    auth?: {
+      username: string;
+      password: string;
+    },
   ) {
     let requestURL = Burly(`http://${deviceAddress}/api.html`);
 
@@ -13,7 +17,19 @@ export class TibboRequests {
       requestURL = requestURL.addQuery(key, request[key]);
     });
 
-    return fetch(requestURL.get).then((response) => response.text());
+    let headers = {};
+
+    if (!!auth) {
+      headers = {
+        Authorization:
+          'Basic ' +
+          Buffer.from(auth.username + ':' + auth.password).toString('base64'),
+      };
+    }
+
+    return fetch(requestURL.get, { headers }).then((response) =>
+      response.text(),
+    );
   }
 
   public static postPlainRequest(
@@ -25,6 +41,10 @@ export class TibboRequests {
     },
     timeout?: number,
     abortController?: AbortController,
+    auth?: {
+      username: string;
+      password: string;
+    },
   ) {
     const requestURL = Burly(`http://${deviceAddress}/api.html`);
 
@@ -39,11 +59,22 @@ export class TibboRequests {
       if (value !== null) query.append(key, `${request[key]}`);
     });
 
+    let headers = {};
+
+    if (!!auth) {
+      headers = {
+        Authorization:
+          'Basic ' +
+          Buffer.from(auth.username + ':' + auth.password).toString('base64'),
+      };
+    }
+
     return fetch(requestURL.get, {
       method: 'POST',
       body: query.toString(),
       timeout,
       signal,
+      headers,
     });
   }
 }

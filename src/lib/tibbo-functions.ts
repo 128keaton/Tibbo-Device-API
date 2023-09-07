@@ -1,7 +1,13 @@
 import { TibboRequests } from './tibbo-requests';
 
 export class TibboFunctions {
-  public reboot(deviceAddress: string): Promise<boolean> {
+  public reboot(
+    deviceAddress: string,
+    auth?: {
+      username: string;
+      password: string;
+    },
+  ): Promise<boolean> {
     const controller = new AbortController();
 
     return new Promise(async (resolve) => {
@@ -21,6 +27,7 @@ export class TibboFunctions {
           },
           1000,
           controller,
+          auth,
         );
       } catch (e: any) {
         if (e.type !== 'aborted') {
@@ -34,13 +41,23 @@ export class TibboFunctions {
     deviceAddress: string,
     commandName: string,
     commandInput?: string,
+    auth?: {
+      username: string;
+      password: string;
+    },
   ) {
-    return TibboRequests.postPlainRequest(deviceAddress, {
-      p: '',
-      e: 'f',
-      action: 'SET',
-      variable: commandName,
-      value: commandInput || 'undefined',
-    }).then((result) => result.ok);
+    return TibboRequests.postPlainRequest(
+      deviceAddress,
+      {
+        p: '',
+        e: 'f',
+        action: 'SET',
+        variable: commandName,
+        value: commandInput || 'undefined',
+      },
+      undefined,
+      undefined,
+      auth,
+    ).then((result) => result.ok);
   }
 }
