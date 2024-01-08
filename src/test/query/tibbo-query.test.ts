@@ -24,7 +24,7 @@ describe('TibboQuery', () => {
     test('query device', async () => {
         mockFetch();
         const tibboQuery = new TibboQuery();
-        const response = await tibboQuery.query('0.0.0.0');
+        const response = await tibboQuery.query('http://0.0.0.0');
 
         expect(response.wifiOn).toEqual(false);
         expect(response.firmwareVersion).toEqual('TPP3W(G2)-4.00.01');

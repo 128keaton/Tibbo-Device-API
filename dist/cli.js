@@ -6,11 +6,6 @@ const lib_1 = require("./lib");
 if (require.main == module) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const packageInfo = require('../package.json');
-    const validateDeviceAddress = (deviceAddress) => {
-        if (!deviceAddress.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/))
-            commander_1.program.error(`error: invalid IP address: '${deviceAddress}'`);
-        return true;
-    };
     const tibboFunctions = new lib_1.TibboFunctions();
     const tibboQuery = new lib_1.TibboQuery();
     const tibboSettings = new lib_1.TibboSettings();
@@ -18,38 +13,35 @@ if (require.main == module) {
     commander_1.program
         .name('tibbo-device-api')
         .version(packageInfo.version)
-        .argument('<ipAddress>', 'IP address of Tibbo device');
+        .argument('<deviceAddress>', 'URL of the Tibbo, i.e. http://192.168.1.4');
     commander_1.program
         .command('reboot')
         .summary('Reboot Tibbo device')
-        .argument('<ipAddress>', 'IP address of Tibbo device')
+        .argument('<deviceAddress>', 'URL of the Tibbo, i.e. http://192.168.1.4')
         .argument('<devicePassword>', 'Password of Tibbo device')
-        .action((ipAddress, devicePassword) => {
-        validateDeviceAddress(ipAddress);
+        .action((deviceAddress, devicePassword) => {
         return tibboFunctions
-            .reboot(ipAddress, devicePassword)
+            .reboot(deviceAddress, devicePassword)
             .then((result) => console.log(result ? 'Success' : 'Error'));
     });
     commander_1.program
         .command('login')
         .summary('Login to a Tibbo device')
-        .argument('<ipAddress>', 'IP address of Tibbo device')
+        .argument('<deviceAddress>', 'URL of the Tibbo, i.e. http://192.168.1.4')
         .argument('<devicePassword>', 'Password of Tibbo device')
-        .action((ipAddress, devicePassword) => {
-        validateDeviceAddress(ipAddress);
+        .action((deviceAddress, devicePassword) => {
         return tibboFunctions
-            .login(ipAddress, devicePassword)
+            .login(deviceAddress, devicePassword)
             .then((result) => console.log(result));
     });
     commander_1.program
         .command('query')
         .summary('Query device info')
-        .argument('<ipAddress>', 'IP address of Tibbo device')
+        .argument('<deviceAddress>', 'URL of the Tibbo, i.e. http://192.168.1.4')
         .argument('<devicePassword>', 'Password of Tibbo device')
-        .action((ipAddress, devicePassword) => {
-        validateDeviceAddress(ipAddress);
+        .action((deviceAddress, devicePassword) => {
         return tibboQuery
-            .query(ipAddress, devicePassword)
+            .query(deviceAddress, devicePassword)
             .then((result) => console.log(JSON.stringify(result, null, 2)));
     });
     const settings = commander_1.program
@@ -58,102 +50,94 @@ if (require.main == module) {
     settings
         .command('all')
         .summary('Get all the current settings on the device')
-        .argument('<ipAddress>', 'IP address of Tibbo device')
+        .argument('<deviceAddress>', 'URL of the Tibbo, i.e. http://192.168.1.4')
         .argument('<devicePassword>', 'Password of Tibbo device')
-        .action((ipAddress, devicePassword) => {
-        validateDeviceAddress(ipAddress);
+        .action((deviceAddress, devicePassword) => {
         return tibboSettings
-            .getAll(ipAddress, devicePassword)
+            .getAll(deviceAddress, devicePassword)
             .then((result) => console.log(JSON.stringify(result, null, 2)));
     });
     settings
         .command('get')
         .summary('Get the value for the setting on the device')
-        .argument('<ipAddress>', 'IP address of Tibbo device')
+        .argument('<deviceAddress>', 'URL of the Tibbo, i.e. http://192.168.1.4')
         .argument('<settingID>', 'ID/name of the setting on the Tibbo device')
         .argument('<devicePassword>', 'Password of Tibbo device')
-        .action((ipAddress, settingID, devicePassword) => {
-        validateDeviceAddress(ipAddress);
+        .action((deviceAddress, settingID, devicePassword) => {
         return tibboSettings
-            .get(ipAddress, settingID, devicePassword)
+            .get(deviceAddress, settingID, devicePassword)
             .then((result) => console.log(JSON.stringify(result, null, 2)));
     });
     settings
         .command('set')
         .summary('Get the value for the setting on the device')
-        .argument('<ipAddress>', 'IP address of Tibbo device')
+        .argument('<deviceAddress>', 'URL of the Tibbo, i.e. http://192.168.1.4')
         .argument('<settingID>', 'ID/name of the setting on the Tibbo device')
         .argument('<settingValue>', 'New value to set for the setting on the Tibbo device')
         .argument('<devicePassword>', 'Password of Tibbo device')
-        .action((ipAddress, settingID, settingValue, devicePassword) => {
-        validateDeviceAddress(ipAddress);
+        .action((deviceAddress, settingID, settingValue, devicePassword) => {
         return tibboSettings
-            .set(ipAddress, settingID, settingValue, devicePassword)
+            .set(deviceAddress, settingID, settingValue, devicePassword)
             .then((result) => console.log(result ? 'Success' : 'Error'));
     });
     settings
         .command('export')
         .summary('Export the settings on the device')
-        .argument('<ipAddress>', 'IP address of Tibbo device')
+        .argument('<deviceAddress>', 'URL of the Tibbo, i.e. http://192.168.1.4')
         .argument('<devicePassword>', 'Password of Tibbo device')
-        .action((ipAddress, devicePassword) => {
-        validateDeviceAddress(ipAddress);
+        .action((deviceAddress, devicePassword) => {
         return tibboSettings
-            .export(ipAddress, devicePassword)
+            .export(deviceAddress, devicePassword)
             .then((result) => console.log(JSON.stringify(JSON.stringify(result))));
     });
     settings
         .command('import')
         .summary('Import raw settings to the device')
-        .argument('<ipAddress>', 'IP address of Tibbo device')
+        .argument('<deviceAddress>', 'URL of the Tibbo, i.e. http://192.168.1.4')
         .argument('<rawSettings>', 'Raw JSON settings string')
         .argument('<devicePassword>', 'Password of Tibbo device')
-        .action((ipAddress, rawSettings, devicePassword) => {
-        validateDeviceAddress(ipAddress);
+        .action((deviceAddress, rawSettings, devicePassword) => {
         return tibboSettings
-            .import(ipAddress, rawSettings, devicePassword)
+            .import(deviceAddress, rawSettings, devicePassword)
             .then((result) => console.log(JSON.stringify(result, null, 2)));
     });
     settings
         .command('initialize')
         .summary('Reset the device settings back to their defaults')
-        .argument('<ipAddress>', 'IP address of Tibbo device')
+        .argument('<deviceAddress>', 'URL of the Tibbo, i.e. http://192.168.1.4')
         .argument('<devicePassword>', 'Password of Tibbo device')
-        .action((ipAddress, devicePassword) => {
-        validateDeviceAddress(ipAddress);
+        .action((deviceAddress, devicePassword) => {
         return tibboSettings
-            .initialize(ipAddress, devicePassword)
+            .initialize(deviceAddress, devicePassword)
             .then((result) => console.log(result ? 'Success' : 'Error'));
     });
     const tables = commander_1.program
         .command('tables')
         .summary('Perform table actions like fetching and managing rows')
-        .argument('<ipAddress>', 'IP address of Tibbo device');
+        .argument('<deviceAddress>', 'URL of the Tibbo, i.e. http://192.168.1.4');
     const rows = tables
         .command('rows')
         .summary('Perform row actions like fetch, delete, add')
-        .argument('<ipAddress>', 'IP address of Tibbo device');
+        .argument('<deviceAddress>', 'URL of the Tibbo, i.e. http://192.168.1.4');
     tables
         .command('fetch')
         .description('Fetch tables from a Tibbo device')
-        .argument('<ipAddress>', 'IP address of Tibbo device')
+        .argument('<deviceAddress>', 'URL of the Tibbo, i.e. http://192.168.1.4')
         .argument('<devicePassword>', 'Password of Tibbo device')
-        .action((ipAddress, devicePassword) => {
-        validateDeviceAddress(ipAddress);
+        .action((deviceAddress, devicePassword) => {
         return tibboTables
-            .get(ipAddress, devicePassword)
+            .get(deviceAddress, devicePassword)
             .then((result) => console.log(JSON.stringify(result, null, 2)));
     });
     rows
         .command('fetch')
         .description('Fetch table rows from a Tibbo device table')
         .argument('<tableName>', 'Name of the table')
-        .argument('<ipAddress>', 'IP address of Tibbo device')
+        .argument('<deviceAddress>', 'URL of the Tibbo, i.e. http://192.168.1.4')
         .argument('<devicePassword>', 'Password of Tibbo device')
-        .action((tableName, ipAddress, devicePassword) => {
-        validateDeviceAddress(ipAddress);
+        .action((tableName, deviceAddress, devicePassword) => {
         return tibboTables
-            .getRows(ipAddress, tableName, devicePassword)
+            .getRows(deviceAddress, tableName, devicePassword)
             .catch((err) => commander_1.program.error(err))
             .then((result) => console.log(JSON.stringify(result, null, 2)));
     });
@@ -162,12 +146,11 @@ if (require.main == module) {
         .description('Remove a single row from the given table on the device')
         .argument('<tableName>', 'Name of the table')
         .argument('<rowID>', 'ID of the row to delete')
-        .argument('<ipAddress>', 'IP address of Tibbo device')
+        .argument('<deviceAddress>', 'URL of the Tibbo, i.e. http://192.168.1.4')
         .argument('<devicePassword>', 'Password of Tibbo device')
-        .action((tableName, rowID, ipAddress, devicePassword) => {
-        validateDeviceAddress(ipAddress);
+        .action((tableName, rowID, deviceAddress, devicePassword) => {
         return tibboTables
-            .deleteRow(rowID, ipAddress, tableName, devicePassword)
+            .deleteRow(rowID, deviceAddress, tableName, devicePassword)
             .then((result) => console.log(result ? 'Success' : 'Error'));
     });
     rows
@@ -175,12 +158,11 @@ if (require.main == module) {
         .description('Add a single row from the given table on the device')
         .argument('<tableName>', 'Name of the table')
         .argument('<rowData>', 'Row data to add')
-        .argument('<ipAddress>', 'IP address of Tibbo device')
+        .argument('<deviceAddress>', 'URL of the Tibbo, i.e. http://192.168.1.4')
         .argument('<devicePassword>', 'Password of Tibbo device')
-        .action((tableName, rowData, ipAddress, devicePassword) => {
-        validateDeviceAddress(ipAddress);
+        .action((tableName, rowData, deviceAddress, devicePassword) => {
         return tibboTables
-            .addRow(rowData, ipAddress, tableName, devicePassword)
+            .addRow(rowData, deviceAddress, tableName, devicePassword)
             .then((result) => console.log(result ? 'Success' : 'Error'));
     });
     const command = commander_1.program
@@ -189,14 +171,13 @@ if (require.main == module) {
     command
         .command('run')
         .description('Run a command on the device with optional value')
-        .argument('<ipAddress>', 'IP address of the Tibbo device')
+        .argument('<deviceAddress>', 'IP address of the Tibbo device')
         .argument('<command>', 'Name of the command')
         .argument('<devicePassword>', 'Password of Tibbo device')
         .option('-v --value', 'Optional value to send')
-        .action((ipAddress, command, devicePassword, value) => {
-        validateDeviceAddress(ipAddress);
+        .action((deviceAddress, command, devicePassword, value) => {
         return tibboFunctions
-            .runCommand(ipAddress, command, value, devicePassword)
+            .runCommand(deviceAddress, command, value, devicePassword)
             .then((result) => console.log(result ? 'Success' : 'Error'));
     });
     commander_1.program.parse();

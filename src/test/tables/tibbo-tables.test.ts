@@ -22,7 +22,7 @@ describe('TibboTables', () => {
       return Promise.resolve(new Response(mockedTableResponse));
     });
 
-    const response = await tibboTables.get('0.0.0.0');
+    const response = await tibboTables.get('http://0.0.0.0');
 
     expect(fetch).toHaveBeenCalledTimes(3);
     expect(response.length).toEqual(2);
@@ -40,7 +40,7 @@ describe('TibboTables', () => {
       return Promise.resolve(new Response(mockedTableResponse));
     });
 
-    const response = await tibboTables.getRows('0.0.0.0', 'CREDS');
+    const response = await tibboTables.getRows('http://0.0.0.0', 'CREDS');
 
     expect(response.length).toEqual(2);
     expect(response[0]).toEqual(new TibboRow('1,1,12-2451', ['ID', 'RAW']));
@@ -53,7 +53,7 @@ describe('TibboTables', () => {
       Promise.resolve(new Response(mockedTableResponse)),
     );
 
-    await expect(tibboTables.getRows('0.0.0.0', 'BAD-TABLE')).rejects.toThrow(
+    await expect(tibboTables.getRows('http://0.0.0.0', 'BAD-TABLE')).rejects.toThrow(
       Error,
     );
   });
@@ -75,7 +75,7 @@ describe('TibboTables', () => {
       },
     );
 
-    const addedRow = await tibboTables.addRow('1,12-2451', '0.0.0.0', 'CREDS');
+    const addedRow = await tibboTables.addRow('1,12-2451', 'http://0.0.0.0', 'CREDS');
 
     expect(addedRow).toEqual(true);
   });
@@ -122,7 +122,7 @@ describe('TibboTables', () => {
       },
     );
 
-    const deletedRow = await tibboTables.deleteRow(0, '0.0.0.0', 'CREDS');
+    const deletedRow = await tibboTables.deleteRow(0, 'http://0.0.0.0', 'CREDS');
 
     expect(deletedRow).toEqual(true);
   });

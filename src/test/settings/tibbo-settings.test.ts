@@ -38,7 +38,7 @@ describe('TibboSettings', () => {
 
     mockFetch();
 
-    const response = await tibboSettings.getAll('0.0.0.0');
+    const response = await tibboSettings.getAll('http://0.0.0.0');
 
     expect(response.length).toEqual(1);
     expect(response[0].id).toEqual('group1');
@@ -51,7 +51,7 @@ describe('TibboSettings', () => {
   test('set setting', async () => {
     const tibboSettings = new TibboSettings();
 
-    const deviceAddress = '0.0.0.0';
+    const deviceAddress = 'http://0.0.0.0';
     const settingID = 'SETTING_ONE';
     mockFetch();
 
@@ -71,19 +71,19 @@ describe('TibboSettings', () => {
     };
 
     const response = await tibboSettings.setMultiple(
-      '0.0.0.0',
+      'http://0.0.0.0',
       updatedSettings,
     );
 
     const responseSettingOne = {
       settingID: 'SETTING_ONE',
-      deviceAddress: '0.0.0.0',
+      deviceAddress: 'http://0.0.0.0',
       didSucceed: true,
     };
 
     const responseSettingTwo = {
       settingID: 'SETTING_NAME1',
-      deviceAddress: '0.0.0.0',
+      deviceAddress: 'http://0.0.0.0',
       didSucceed: true,
     };
 
@@ -94,7 +94,7 @@ describe('TibboSettings', () => {
     const tibboSettings = new TibboSettings();
 
     await expect(
-      tibboSettings.set('0.0.0.0', 'SETTING_INVALID', 1),
+      tibboSettings.set('http://0.0.0.0', 'SETTING_INVALID', 1),
     ).rejects.toThrow(Error);
   });
 
@@ -107,7 +107,7 @@ describe('TibboSettings', () => {
     };
 
     await expect(
-      tibboSettings.setMultiple('0.0.0.0', updatedSettings),
+      tibboSettings.setMultiple('http://0.0.0.0', updatedSettings),
     ).rejects.toThrow(Error);
   });
 
@@ -120,7 +120,7 @@ describe('TibboSettings', () => {
     };
 
     await expect(
-      tibboSettings.setMultiple('0.0.0.0', updatedSettings),
+      tibboSettings.setMultiple('http://0.0.0.0', updatedSettings),
     ).rejects.toThrow(Error);
   });
 
@@ -130,7 +130,7 @@ describe('TibboSettings', () => {
     mockFetch();
 
     await expect(
-      tibboSettings.set('0.0.0.0', 'SETTING_ONE', 2),
+      tibboSettings.set('http://0.0.0.0', 'SETTING_ONE', 2),
     ).rejects.toThrow(Error);
   });
 
@@ -139,7 +139,7 @@ describe('TibboSettings', () => {
 
     mockFetch();
 
-    const response = await tibboSettings.get('0.0.0.0', 'SETTING_ONE');
+    const response = await tibboSettings.get('http://0.0.0.0', 'SETTING_ONE');
 
     expect(response.id).toEqual(`SETTING_ONE`);
     expect(response.rawValue).toEqual(1);
@@ -151,7 +151,7 @@ describe('TibboSettings', () => {
 
     mockFetch();
 
-    const response = await tibboSettings.export('0.0.0.0');
+    const response = await tibboSettings.export('http://0.0.0.0');
     const exportString = JSON.parse(`{"SETTING_ONE":1,"SETTING_NAME1":1,"stg2":0}`);
 
     expect(response).toEqual(exportString);
@@ -163,23 +163,23 @@ describe('TibboSettings', () => {
     mockFetch();
 
     const exportString = `{"SETTING_ONE":1,"SETTING_NAME1":1,"stg2":0}`;
-    const response = await tibboSettings.import('0.0.0.0', exportString);
+    const response = await tibboSettings.import('http://0.0.0.0', exportString);
 
     const responseSettingOne = {
       settingID: 'SETTING_ONE',
-      deviceAddress: '0.0.0.0',
+      deviceAddress: 'http://0.0.0.0',
       didSucceed: true,
     };
 
     const responseSettingTwo = {
       settingID: 'SETTING_NAME1',
-      deviceAddress: '0.0.0.0',
+      deviceAddress: 'http://0.0.0.0',
       didSucceed: true,
     };
 
     const responseSettingThree = {
       settingID: 'stg2',
-      deviceAddress: '0.0.0.0',
+      deviceAddress: 'http://0.0.0.0',
       didSucceed: true,
     };
 
@@ -194,13 +194,13 @@ describe('TibboSettings', () => {
     const tibboSettings = new TibboSettings();
 
     await expect(
-      tibboSettings.get('0.0.0.0', 'SETTING_INVALID'),
+      tibboSettings.get('http://0.0.0.0', 'SETTING_INVALID'),
     ).rejects.toThrow(Error);
   });
 
   test('initialize settings', async () => {
     const tibboSettings = new TibboSettings();
-    const deviceAddress = '0.0.0.0';
+    const deviceAddress = 'http://0.0.0.0';
     const response = await tibboSettings.initialize(deviceAddress);
 
     expect(response).toEqual({ deviceAddress, didSucceed: true });

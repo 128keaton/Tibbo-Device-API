@@ -68,7 +68,7 @@ class TibboRequests {
         return hashedPassword;
     }
     async getPlainRequest(deviceAddress, request, devicePassword) {
-        let requestURL = (0, kb_burly_1.Burly)(`http://${deviceAddress}/api.html`);
+        let requestURL = (0, kb_burly_1.Burly)(`${deviceAddress}/api.html`);
         Object.keys(request).forEach((key) => {
             requestURL = requestURL.addQuery(key, request[key]);
         });
@@ -86,7 +86,7 @@ class TibboRequests {
         return await response.text();
     }
     async postPlainRequest(deviceAddress, request, timeout, abortController, devicePassword) {
-        const requestURL = (0, kb_burly_1.Burly)(`http://${deviceAddress}/api.html`);
+        const requestURL = (0, kb_burly_1.Burly)(`${deviceAddress}/api.html`);
         const query = new URLSearchParams();
         const controller = abortController || new AbortController();
         const signal = controller.signal;

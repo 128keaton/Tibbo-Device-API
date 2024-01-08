@@ -23,7 +23,7 @@ describe('TibboFunctions', () => {
         const functions = new TibboFunctions();
 
         fetchMock.mockResponseOnce('');
-        const response = functions.reboot('0.0.0.0');
+        const response = functions.reboot('http://0.0.0.0');
 
         await expect(response).resolves.toEqual(true);
     });

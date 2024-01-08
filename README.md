@@ -31,6 +31,9 @@ $ npm install @vipstorage/tibbo-device-api
   * Run command
 
 ## Changelog
+### 0.1.6
+* No longer using IP address, please send full url, so `0.0.0.0` becomes `http://0.0.0.0`
+
 ### 0.1.5
 * Changes authentication method
 * Adds login function
@@ -85,7 +88,7 @@ $ npm install @vipstorage/tibbo-device-api
 $ npx tibbo-device-api
 ```
 
-Example output of `npx tibbo-device-api tables fetch 0.0.0.0 password`:
+Example output of `npx tibbo-device-api tables fetch http://0.0.0.0 password`:
 ```json
 [
   {

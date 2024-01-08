@@ -56,7 +56,7 @@ export class TibboRequests {
     request: { [key: string]: string; e: string },
     devicePassword?: string,
   ) {
-    let requestURL = Burly(`http://${deviceAddress}/api.html`);
+    let requestURL = Burly(`${deviceAddress}/api.html`);
 
     Object.keys(request).forEach((key) => {
       requestURL = requestURL.addQuery(key, request[key]);
@@ -87,7 +87,7 @@ export class TibboRequests {
     abortController?: AbortController,
     devicePassword?: string,
   ) {
-    const requestURL = Burly(`http://${deviceAddress}/api.html`);
+    const requestURL = Burly(`${deviceAddress}/api.html`);
 
     const query = new URLSearchParams();
 
