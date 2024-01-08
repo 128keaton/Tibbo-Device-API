@@ -3,7 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TibboFunctions = void 0;
 const tibbo_requests_1 = require("./tibbo-requests");
 class TibboFunctions {
-    reboot(deviceAddress, auth) {
+    tibboRequests = tibbo_requests_1.TibboRequests.getInstance();
+    login(deviceAddress, password) {
+        return this.tibboRequests.login(deviceAddress, password);
+    }
+    reboot(deviceAddress, devicePassword) {
         const controller = new AbortController();
         return new Promise(async (resolve) => {
             setTimeout(() => {
@@ -11,12 +15,11 @@ class TibboFunctions {
                 resolve(true);
             }, 1000);
             try {
-                await tibbo_requests_1.TibboRequests.postPlainRequest(deviceAddress, {
-                    p: '',
+                await this.tibboRequests.postPlainRequest(deviceAddress, {
                     e: 's',
                     a: 'cmd',
                     cmd: 'E',
-                }, 1000, controller, auth);
+                }, 1000, controller, devicePassword);
             }
             catch (e) {
                 if (e.type !== 'aborted') {
@@ -25,14 +28,15 @@ class TibboFunctions {
             }
         });
     }
-    runCommand(deviceAddress, commandName, commandInput, auth) {
-        return tibbo_requests_1.TibboRequests.postPlainRequest(deviceAddress, {
-            p: '',
+    runCommand(deviceAddress, commandName, commandInput, devicePassword) {
+        return this.tibboRequests
+            .postPlainRequest(deviceAddress, {
             e: 'f',
             action: 'SET',
             variable: commandName,
             value: commandInput || 'undefined',
-        }, undefined, undefined, auth).then((result) => result.ok);
+        }, undefined, undefined, devicePassword)
+            .then((result) => result.ok);
     }
 }
 exports.TibboFunctions = TibboFunctions;

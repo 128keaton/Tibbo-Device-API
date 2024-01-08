@@ -8,7 +8,7 @@ const { Response } = jest.requireActual('node-fetch');
 const mockFetch = () => {
   return (fetch as jest.MockedFunction<typeof fetch>).mockImplementation(
     (url, init) => {
-      if (url === 'http://0.0.0.0/api.html?e=s&a=def&p=')
+      if (url === 'http://0.0.0.0/api.html?e=s&a=def')
         return Promise.resolve(
           new Response(
             `"I=group1;D=General;T=GROUP;\r\nI=SETTING_ONE;T=STRING;C=STATIC;D=Demo Setting 1;V=SETTING_ONE<=1&&SETTING_ONE>=0?"":"Value must be between 0 and 1";O=Off/0/On/1;\r\nI=SETTING_NAME1;T=STRING;C=IPCTRL;D=SettingDescriptionThing;V=SETTING_NAME1<=100&&SETTING_NAME1>=1?"":"Value must be between 1 and 100";\r\nI=stg2;T=DATETIME;C=PASSWORD;D=Setting Display Name;\r\n    @@STG_RefPath=settings.xtxt"`,
@@ -16,13 +16,13 @@ const mockFetch = () => {
         );
 
       if (!!init) {
-        if (init.body === 'e=s&a=cmd&p=&cmd=GSETTING_NAME1') {
+        if (init.body === 'e=s&a=cmd&cmd=GSETTING_NAME1') {
           return Promise.resolve(new Response('BA1\n'));
-        } else if (`${init.body || ''}`.includes('e=s&a=cmd&p=&cmd=S')) {
+        } else if (`${init.body || ''}`.includes('e=s&a=cmd&cmd=S')) {
           return Promise.resolve(new Response('BA1\r'));
-        } else if (init.body === 'e=s&a=cmd&p=&cmd=I') {
+        } else if (init.body === 'e=s&a=cmd&cmd=I') {
           return Promise.resolve(new Response('BA\r'));
-        } else if (init.body === 'e=s&a=cmd&p=&cmd=GSETTING_ONE') {
+        } else if (init.body === 'e=s&a=cmd&cmd=GSETTING_ONE') {
           return Promise.resolve(new Response('A1\n'));
         }
       }

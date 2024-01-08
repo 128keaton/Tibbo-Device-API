@@ -1,4 +1,4 @@
-import {TibboRow, TibboTable} from "../../index";
+import {TibboRow, TibboTable} from "../../lib";
 import {rawTableOne} from "../test-consts";
 
 describe('test TibboTable', () => {

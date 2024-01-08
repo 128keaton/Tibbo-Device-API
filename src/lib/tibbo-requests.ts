@@ -1,15 +1,60 @@
 import { Burly } from 'kb-burly';
 import fetch from 'node-fetch';
+import * as crypto from 'crypto';
+import { TibboAuth } from './types/auth';
 
 /** @internal */
 export class TibboRequests {
-  public static getPlainRequest(
+  private static instance: TibboRequests | undefined = undefined;
+
+  private auth: TibboAuth[];
+
+  private constructor() {
+    this.auth = [];
+  }
+
+  static getInstance(): TibboRequests {
+    if (!TibboRequests.instance) {
+      TibboRequests.instance = new TibboRequests();
+    }
+
+    return TibboRequests.instance;
+  }
+
+  public async login(deviceAddress: string, password: string) {
+    const response = await this.getPlainRequest(deviceAddress, {
+      e: 'a',
+      action: 'get',
+    });
+
+    const hashedPassword = crypto
+      .createHash('md5')
+      .update(`${password}${response}`)
+      .digest('hex');
+
+    const existingAuth = this.auth.find(
+      (auth) => auth.deviceAddress === deviceAddress,
+    );
+
+    if (!!existingAuth) {
+      existingAuth.hashedPassword = hashedPassword;
+      existingAuth.lastAuthResponse = response;
+    } else {
+      this.auth.push({
+        deviceAddress,
+        hashedPassword,
+        lastAuthResponse: response,
+        devicePassword: password,
+      });
+    }
+
+    return hashedPassword;
+  }
+
+  public async getPlainRequest(
     deviceAddress: string,
-    request: { [key: string]: string; e: string; p: string },
-    auth?: {
-      username: string;
-      password: string;
-    },
+    request: { [key: string]: string; e: string },
+    devicePassword?: string,
   ) {
     let requestURL = Burly(`http://${deviceAddress}/api.html`);
 
@@ -17,34 +62,30 @@ export class TibboRequests {
       requestURL = requestURL.addQuery(key, request[key]);
     });
 
-    let headers = {};
+    if (!!devicePassword) {
+      const hashedPassword = await this.login(deviceAddress, devicePassword);
+      requestURL = requestURL.addQuery('p', hashedPassword);
+    } else {
+      const auth = this.getAuth(deviceAddress);
 
-    if (!!auth) {
-      headers = {
-        Authorization:
-          'Basic ' +
-          Buffer.from(auth.username + ':' + auth.password).toString('base64'),
-      };
+      if (!!auth && !!auth.hashedPassword) {
+        requestURL = requestURL.addQuery('p', auth.hashedPassword);
+      }
     }
 
-    return fetch(requestURL.get, { headers }).then((response) =>
-      response.text(),
-    );
+    const response = await fetch(requestURL.get);
+    return await response.text();
   }
 
-  public static postPlainRequest(
+  public async postPlainRequest(
     deviceAddress: string,
     request: {
       [key: string]: string | number | null;
       e: string;
-      p: string | null;
     },
     timeout?: number,
     abortController?: AbortController,
-    auth?: {
-      username: string;
-      password: string;
-    },
+    devicePassword?: string,
   ) {
     const requestURL = Burly(`http://${deviceAddress}/api.html`);
 
@@ -59,14 +100,15 @@ export class TibboRequests {
       if (value !== null) query.append(key, `${request[key]}`);
     });
 
-    let headers = {};
+    if (!!devicePassword) {
+      const hashedPassword = await this.login(deviceAddress, devicePassword);
+      query.append('p', hashedPassword);
+    } else {
+      const auth = this.getAuth(deviceAddress);
 
-    if (!!auth) {
-      headers = {
-        Authorization:
-          'Basic ' +
-          Buffer.from(auth.username + ':' + auth.password).toString('base64'),
-      };
+      if (!!auth && !!auth.hashedPassword) {
+        query.append('p', auth.hashedPassword);
+      }
     }
 
     return fetch(requestURL.get, {
@@ -74,7 +116,10 @@ export class TibboRequests {
       body: query.toString(),
       timeout,
       signal,
-      headers,
     });
+  }
+
+  private getAuth(deviceAddress: string) {
+    return this.auth.find((auth) => auth.deviceAddress === deviceAddress);
   }
 }

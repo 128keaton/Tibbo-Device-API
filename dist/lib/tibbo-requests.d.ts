@@ -1,20 +1,18 @@
 /// <reference types="node" />
 /** @internal */
 export declare class TibboRequests {
-    static getPlainRequest(deviceAddress: string, request: {
+    private static instance;
+    private auth;
+    private constructor();
+    static getInstance(): TibboRequests;
+    login(deviceAddress: string, password: string): Promise<string>;
+    getPlainRequest(deviceAddress: string, request: {
         [key: string]: string;
         e: string;
-        p: string;
-    }, auth?: {
-        username: string;
-        password: string;
-    }): Promise<string>;
-    static postPlainRequest(deviceAddress: string, request: {
+    }, devicePassword?: string): Promise<string>;
+    postPlainRequest(deviceAddress: string, request: {
         [key: string]: string | number | null;
         e: string;
-        p: string | null;
-    }, timeout?: number, abortController?: AbortController, auth?: {
-        username: string;
-        password: string;
-    }): Promise<import("node-fetch").Response>;
+    }, timeout?: number, abortController?: AbortController, devicePassword?: string): Promise<import("node-fetch").Response>;
+    private getAuth;
 }

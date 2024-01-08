@@ -5,13 +5,17 @@ import { TibboQuery, TibboTables, TibboSettings, TibboFunctions } from './lib';
 if (require.main == module) {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const packageInfo = require('../package.json');
-  const stdin = '';
   const validateDeviceAddress = (deviceAddress: string) => {
     if (!deviceAddress.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/))
       program.error(`error: invalid IP address: '${deviceAddress}'`);
 
     return true;
   };
+
+  const tibboFunctions = new TibboFunctions();
+  const tibboQuery = new TibboQuery();
+  const tibboSettings = new TibboSettings();
+  const tibboTables = new TibboTables();
 
   program
     .name('tibbo-device-api')
@@ -22,21 +26,35 @@ if (require.main == module) {
     .command('reboot')
     .summary('Reboot Tibbo device')
     .argument('<ipAddress>', 'IP address of Tibbo device')
-    .action((ipAddress) => {
+    .argument('<devicePassword>', 'Password of Tibbo device')
+    .action((ipAddress, devicePassword) => {
       validateDeviceAddress(ipAddress);
-      return new TibboFunctions()
-        .reboot(ipAddress)
+      return tibboFunctions
+        .reboot(ipAddress, devicePassword)
         .then((result) => console.log(result ? 'Success' : 'Error'));
+    });
+
+  program
+    .command('login')
+    .summary('Login to a Tibbo device')
+    .argument('<ipAddress>', 'IP address of Tibbo device')
+    .argument('<devicePassword>', 'Password of Tibbo device')
+    .action((ipAddress, devicePassword) => {
+      validateDeviceAddress(ipAddress);
+      return tibboFunctions
+        .login(ipAddress, devicePassword)
+        .then((result) => console.log(result));
     });
 
   program
     .command('query')
     .summary('Query device info')
     .argument('<ipAddress>', 'IP address of Tibbo device')
-    .action((ipAddress) => {
+    .argument('<devicePassword>', 'Password of Tibbo device')
+    .action((ipAddress, devicePassword) => {
       validateDeviceAddress(ipAddress);
-      return new TibboQuery()
-        .query(ipAddress)
+      return tibboQuery
+        .query(ipAddress, devicePassword)
         .then((result) => console.log(JSON.stringify(result, null, 2)));
     });
 
@@ -48,10 +66,11 @@ if (require.main == module) {
     .command('all')
     .summary('Get all the current settings on the device')
     .argument('<ipAddress>', 'IP address of Tibbo device')
-    .action((ipAddress) => {
+    .argument('<devicePassword>', 'Password of Tibbo device')
+    .action((ipAddress, devicePassword) => {
       validateDeviceAddress(ipAddress);
-      return new TibboSettings()
-        .getAll(ipAddress)
+      return tibboSettings
+        .getAll(ipAddress, devicePassword)
         .then((result) => console.log(JSON.stringify(result, null, 2)));
     });
 
@@ -60,10 +79,11 @@ if (require.main == module) {
     .summary('Get the value for the setting on the device')
     .argument('<ipAddress>', 'IP address of Tibbo device')
     .argument('<settingID>', 'ID/name of the setting on the Tibbo device')
-    .action((ipAddress, settingID) => {
+    .argument('<devicePassword>', 'Password of Tibbo device')
+    .action((ipAddress, settingID, devicePassword) => {
       validateDeviceAddress(ipAddress);
-      return new TibboSettings()
-        .get(ipAddress, settingID)
+      return tibboSettings
+        .get(ipAddress, settingID, devicePassword)
         .then((result) => console.log(JSON.stringify(result, null, 2)));
     });
 
@@ -76,10 +96,11 @@ if (require.main == module) {
       '<settingValue>',
       'New value to set for the setting on the Tibbo device',
     )
-    .action((ipAddress, settingID, settingValue) => {
+    .argument('<devicePassword>', 'Password of Tibbo device')
+    .action((ipAddress, settingID, settingValue, devicePassword) => {
       validateDeviceAddress(ipAddress);
-      return new TibboSettings()
-        .set(ipAddress, settingID, settingValue)
+      return tibboSettings
+        .set(ipAddress, settingID, settingValue, devicePassword)
         .then((result) => console.log(result ? 'Success' : 'Error'));
     });
 
@@ -87,10 +108,11 @@ if (require.main == module) {
     .command('export')
     .summary('Export the settings on the device')
     .argument('<ipAddress>', 'IP address of Tibbo device')
-    .action((ipAddress) => {
+    .argument('<devicePassword>', 'Password of Tibbo device')
+    .action((ipAddress, devicePassword) => {
       validateDeviceAddress(ipAddress);
-      return new TibboSettings()
-        .export(ipAddress)
+      return tibboSettings
+        .export(ipAddress, devicePassword)
         .then((result) => console.log(JSON.stringify(JSON.stringify(result))));
     });
 
@@ -99,10 +121,11 @@ if (require.main == module) {
     .summary('Import raw settings to the device')
     .argument('<ipAddress>', 'IP address of Tibbo device')
     .argument('<rawSettings>', 'Raw JSON settings string')
-    .action((ipAddress, rawSettings) => {
+    .argument('<devicePassword>', 'Password of Tibbo device')
+    .action((ipAddress, rawSettings, devicePassword) => {
       validateDeviceAddress(ipAddress);
-      return new TibboSettings()
-        .import(ipAddress, rawSettings)
+      return tibboSettings
+        .import(ipAddress, rawSettings, devicePassword)
         .then((result) => console.log(JSON.stringify(result, null, 2)));
     });
 
@@ -110,10 +133,11 @@ if (require.main == module) {
     .command('initialize')
     .summary('Reset the device settings back to their defaults')
     .argument('<ipAddress>', 'IP address of Tibbo device')
-    .action((ipAddress) => {
+    .argument('<devicePassword>', 'Password of Tibbo device')
+    .action((ipAddress, devicePassword) => {
       validateDeviceAddress(ipAddress);
-      return new TibboSettings()
-        .initialize(ipAddress)
+      return tibboSettings
+        .initialize(ipAddress, devicePassword)
         .then((result) => console.log(result ? 'Success' : 'Error'));
     });
 
@@ -131,10 +155,11 @@ if (require.main == module) {
     .command('fetch')
     .description('Fetch tables from a Tibbo device')
     .argument('<ipAddress>', 'IP address of Tibbo device')
-    .action((ipAddress) => {
+    .argument('<devicePassword>', 'Password of Tibbo device')
+    .action((ipAddress, devicePassword) => {
       validateDeviceAddress(ipAddress);
-      return new TibboTables()
-        .get(ipAddress)
+      return tibboTables
+        .get(ipAddress, devicePassword)
         .then((result) => console.log(JSON.stringify(result, null, 2)));
     });
 
@@ -143,11 +168,12 @@ if (require.main == module) {
     .description('Fetch table rows from a Tibbo device table')
     .argument('<tableName>', 'Name of the table')
     .argument('<ipAddress>', 'IP address of Tibbo device')
-    .action((tableName, ipAddress) => {
+    .argument('<devicePassword>', 'Password of Tibbo device')
+    .action((tableName, ipAddress, devicePassword) => {
       validateDeviceAddress(ipAddress);
 
-      return new TibboTables()
-        .getRows(ipAddress, tableName)
+      return tibboTables
+        .getRows(ipAddress, tableName, devicePassword)
         .catch((err) => program.error(err))
         .then((result) => console.log(JSON.stringify(result, null, 2)));
     });
@@ -158,11 +184,12 @@ if (require.main == module) {
     .argument('<tableName>', 'Name of the table')
     .argument('<rowID>', 'ID of the row to delete')
     .argument('<ipAddress>', 'IP address of Tibbo device')
-    .action((tableName, rowID, ipAddress) => {
+    .argument('<devicePassword>', 'Password of Tibbo device')
+    .action((tableName, rowID, ipAddress, devicePassword) => {
       validateDeviceAddress(ipAddress);
 
-      return new TibboTables()
-        .deleteRow(rowID, ipAddress, tableName)
+      return tibboTables
+        .deleteRow(rowID, ipAddress, tableName, devicePassword)
         .then((result) => console.log(result ? 'Success' : 'Error'));
     });
 
@@ -172,11 +199,12 @@ if (require.main == module) {
     .argument('<tableName>', 'Name of the table')
     .argument('<rowData>', 'Row data to add')
     .argument('<ipAddress>', 'IP address of Tibbo device')
-    .action((tableName, rowData, ipAddress) => {
+    .argument('<devicePassword>', 'Password of Tibbo device')
+    .action((tableName, rowData, ipAddress, devicePassword) => {
       validateDeviceAddress(ipAddress);
 
-      return new TibboTables()
-        .addRow(rowData, ipAddress, tableName)
+      return tibboTables
+        .addRow(rowData, ipAddress, tableName, devicePassword)
         .then((result) => console.log(result ? 'Success' : 'Error'));
     });
 
@@ -189,12 +217,13 @@ if (require.main == module) {
     .description('Run a command on the device with optional value')
     .argument('<ipAddress>', 'IP address of the Tibbo device')
     .argument('<command>', 'Name of the command')
+    .argument('<devicePassword>', 'Password of Tibbo device')
     .option('-v --value', 'Optional value to send')
-    .action((ipAddress, command, value) => {
+    .action((ipAddress, command, devicePassword, value) => {
       validateDeviceAddress(ipAddress);
 
-      return new TibboFunctions()
-        .runCommand(ipAddress, command, value)
+      return tibboFunctions
+        .runCommand(ipAddress, command, value, devicePassword)
         .then((result) => console.log(result ? 'Success' : 'Error'));
     });
 

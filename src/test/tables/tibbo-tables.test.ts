@@ -14,8 +14,8 @@ describe('TibboTables', () => {
 
     (fetch as jest.MockedFunction<typeof fetch>).mockImplementation((url) => {
       if (
-        url === 'http://0.0.0.0/api.html?e=t&p=&a=rows&table=CREDS' ||
-        url === 'http://0.0.0.0/api.html?e=t&p=&a=rows&table=TBL2'
+        url === 'http://0.0.0.0/api.html?e=t&a=rows&table=CREDS' ||
+        url === 'http://0.0.0.0/api.html?e=t&a=rows&table=TBL2'
       )
         return Promise.resolve(new Response('0'));
 
@@ -33,7 +33,7 @@ describe('TibboTables', () => {
     const tibboTables = new TibboTables();
 
     (fetch as jest.MockedFunction<typeof fetch>).mockImplementation((url) => {
-      if (url === 'http://0.0.0.0/api.html?e=t&p=&a=rows&table=CREDS') {
+      if (url === 'http://0.0.0.0/api.html?e=t&a=rows&table=CREDS') {
         return Promise.resolve(new Response('2\r\n1,1,12-2451\r\n2,2,12-2455'));
       }
 

@@ -1,12 +1,15 @@
 import { TibboRequests } from './tibbo-requests';
 
 export class TibboFunctions {
+  private tibboRequests: TibboRequests = TibboRequests.getInstance();
+
+  public login(deviceAddress: string, password: string): Promise<string> {
+    return this.tibboRequests.login(deviceAddress, password);
+  }
+
   public reboot(
     deviceAddress: string,
-    auth?: {
-      username: string;
-      password: string;
-    },
+    devicePassword?: string,
   ): Promise<boolean> {
     const controller = new AbortController();
 
@@ -17,17 +20,16 @@ export class TibboFunctions {
       }, 1000);
 
       try {
-        await TibboRequests.postPlainRequest(
+        await this.tibboRequests.postPlainRequest(
           deviceAddress,
           {
-            p: '',
             e: 's',
             a: 'cmd',
             cmd: 'E',
           },
           1000,
           controller,
-          auth,
+          devicePassword,
         );
       } catch (e: any) {
         if (e.type !== 'aborted') {
@@ -41,23 +43,21 @@ export class TibboFunctions {
     deviceAddress: string,
     commandName: string,
     commandInput?: string,
-    auth?: {
-      username: string;
-      password: string;
-    },
+    devicePassword?: string,
   ) {
-    return TibboRequests.postPlainRequest(
-      deviceAddress,
-      {
-        p: '',
-        e: 'f',
-        action: 'SET',
-        variable: commandName,
-        value: commandInput || 'undefined',
-      },
-      undefined,
-      undefined,
-      auth,
-    ).then((result) => result.ok);
+    return this.tibboRequests
+      .postPlainRequest(
+        deviceAddress,
+        {
+          e: 'f',
+          action: 'SET',
+          variable: commandName,
+          value: commandInput || 'undefined',
+        },
+        undefined,
+        undefined,
+        devicePassword,
+      )
+      .then((result) => result.ok);
   }
 }

@@ -1,10 +1,6 @@
 export declare class TibboFunctions {
-    reboot(deviceAddress: string, auth?: {
-        username: string;
-        password: string;
-    }): Promise<boolean>;
-    runCommand(deviceAddress: string, commandName: string, commandInput?: string, auth?: {
-        username: string;
-        password: string;
-    }): Promise<boolean>;
+    private tibboRequests;
+    login(deviceAddress: string, password: string): Promise<string>;
+    reboot(deviceAddress: string, devicePassword?: string): Promise<boolean>;
+    runCommand(deviceAddress: string, commandName: string, commandInput?: string, devicePassword?: string): Promise<boolean>;
 }

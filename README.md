@@ -31,6 +31,10 @@ $ npm install @vipstorage/tibbo-device-api
   * Run command
 
 ## Changelog
+### 0.1.5
+* Changes authentication method
+* Adds login function
+
 ### 0.1.1
 * Adds ability to add a structured row
 * Fixes issue with empty table names
@@ -81,7 +85,7 @@ $ npm install @vipstorage/tibbo-device-api
 $ npx tibbo-device-api
 ```
 
-Example output of `npx tibbo-device-api tables fetch 0.0.0.0`:
+Example output of `npx tibbo-device-api tables fetch 0.0.0.0 password`:
 ```json
 [
   {
